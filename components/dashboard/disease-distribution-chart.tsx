@@ -40,7 +40,7 @@ export function DiseaseDistributionChart({ data, totalPatients = "1,284" }: Dise
             </div>
 
             {/* Legend */}
-            <div className="absolute bottom-0 w-full flex justify-center gap-4 text-xs translate-y-8">
+            <div className="absolute bottom-4 w-full flex justify-center gap-4 text-xs">
                 {data.slice(0, 3).map((item) => (
                     <div key={item.name} className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></span>

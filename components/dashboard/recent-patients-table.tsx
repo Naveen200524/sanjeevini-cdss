@@ -33,14 +33,14 @@ export function RecentPatientsTable({ patients }: RecentPatientsTableProps) {
             </div>
 
             <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
+                <table className="w-full text-left text-sm whitespace-nowrap">
                     <thead>
                         <tr className="bg-slate-50/50 text-slate-500 border-b border-slate-100">
                             <th className="px-6 py-4 font-medium">Patient</th>
                             <th className="px-6 py-4 font-medium">Diagnosis</th>
-                            <th className="px-6 py-4 font-medium">Date</th>
-                            <th className="px-6 py-4 font-medium">Status</th>
-                            <th className="px-6 py-4 font-medium text-right">Actions</th>
+                            <th className="px-4 py-4 font-medium">Date</th>
+                            <th className="px-4 py-4 font-medium">Status</th>
+                            <th className="px-4 py-4 font-medium text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,21 +60,21 @@ export function RecentPatientsTable({ patients }: RecentPatientsTableProps) {
                                 <td className="px-6 py-4 text-slate-600 font-medium">
                                     {patient.diagnosis}
                                 </td>
-                                <td className="px-6 py-4 text-slate-500">
+                                <td className="px-4 py-4 text-slate-500">
                                     {patient.date}
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-4 py-4">
                                     <Badge
                                         className={
-                                            patient.status === "Critical" ? "bg-red-100 text-red-600 border-none" :
-                                                patient.status === "Stable" ? "bg-emerald-100 text-emerald-600 border-none" :
-                                                    "bg-amber-100 text-amber-600 border-none"
+                                            patient.status === "Critical" ? "bg-red-100 text-red-600 border-none shadow-none" :
+                                                patient.status === "Stable" ? "bg-emerald-100 text-emerald-600 border-none shadow-none" :
+                                                    "bg-amber-100 text-amber-600 border-none shadow-none"
                                         }
                                     >
                                         {patient.status}
                                     </Badge>
                                 </td>
-                                <td className="px-6 py-4 text-right">
+                                <td className="px-4 py-4 text-right">
                                     <Button variant="ghost" size="icon" className="text-slate-400 hover:text-primary-600">
                                         <MoreHorizontal size={18} />
                                     </Button>
