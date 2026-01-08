@@ -1,8 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sanjeevini - Clinical Decision Support System (CDSS)
 
-## Getting Started
+![Next.js](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
 
-First, run the development server:
+**Sanjeevini** is an advanced Multi-Disease Clinical Decision Support System (CDSS) designed to assist physicians in early detection and management of chronic conditions. By leveraging machine learning models and comprehensive biomarker analysis, Sanjeevini provides accurate risk predictions for Cardiovascular Disease (CVD), Diabetes, and Chronic Kidney Disease (CKD).
+
+## 🚀 Key Features
+
+-   **Multi-Disease Risk Prediction**: Simultaneous analysis for:
+    -   🔴 **Cardiovascular Disease**: 10-year risk assessment.
+    -   🟡 **Diabetes**: Progression and control analysis.
+    -   🟠 **Chronic Kidney Disease (CKD)**: Stage classification and monitoring.
+-   **Biomarker Analysis**: Intelligent processing of lab reports with OCR capabilities and manual entry validation.
+-   **Physician Dashboard**: Centralized view for patient management, high-risk alerts, and predictive analytics.
+-   **Interactive Visualizations**: Dynamic charts for biomarker trends, risk trajectories, and SHAP-based factor analysis.
+-   **Automated Reporting**: Generate professional clinical reports for patients and specialists.
+-   **Secure & Compliant**: Designed with role-based access control (RBAC) and privacy standards.
+
+## 🛠️ Tech Stack
+
+-   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+-   **UI Library**: [React 19](https://react.dev/)
+-   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+-   **Animations**: [Framer Motion](https://www.framer.com/motion/)
+-   **Charts**: [Recharts](https://recharts.org/) / [Tremor](https://www.tremor.so/)
+-   **Language**: [TypeScript](https://www.typescriptlang.org/)
+
+## 🏁 Getting Started
+
+First, install the dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -10,27 +49,26 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📂 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+Sanjeevini/
+├── app/                  # Next.js App Router pages and layouts
+│   ├── (dashboard)/      # Protected dashboard routes
+│   └── (auth)/           # Authentication routes
+├── components/           # Reusable UI components
+│   ├── dashboard/        # Dashboard-specific components (charts, cards)
+│   ├── patient/          # Patient management components
+│   └── ui/               # Generic UI elements (buttons, inputs)
+├── lib/                  # Utility functions and shared logic
+├── public/               # Static assets
+└── styles/               # Global styles
+```
 
-## Learn More
+## 📄 License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
