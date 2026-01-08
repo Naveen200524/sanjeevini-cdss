@@ -50,9 +50,7 @@ export function Sidebar() {
                 </nav>
 
                 <div className="flex flex-col gap-4 items-center mt-auto">
-                    <button className="p-3 text-slate-400 hover:text-primary-600 transition-colors">
-                        <Settings size={22} />
-                    </button>
+
                     <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border-2 border-white shadow-sm relative">
                         <NextImage
                             src="https://ui-avatars.com/api/?name=Dr+Emily&background=random"
