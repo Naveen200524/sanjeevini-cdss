@@ -9,11 +9,11 @@ import { motion } from "framer-motion";
 
 // Mock Data matching ui.md
 const patients = [
-    { id: "1", name: "Rajesh Kumar", mrn: "MRN12345", age: 55, gender: "Male", lastTest: "2 days ago", risk: "High", condition: "CVD", riskColor: "bg-red-500", score: "82%" },
-    { id: "2", name: "Priya Sharma", mrn: "MRN12346", age: 48, gender: "Female", lastTest: "5 days ago", risk: "Moderate", condition: "Diabetes", riskColor: "bg-amber-500", score: "58%" },
-    { id: "3", name: "Amit Patel", mrn: "MRN12347", age: 62, gender: "Male", lastTest: "1 week ago", risk: "Low", condition: "Routine", riskColor: "bg-emerald-500", score: "12%" },
-    { id: "4", name: "Sunita Reddy", mrn: "MRN12348", age: 34, gender: "Female", lastTest: "2 weeks ago", risk: "Low", condition: "Routine", riskColor: "bg-emerald-500", score: "5%" },
-    { id: "5", name: "Vikram Singh", mrn: "MRN12349", age: 58, gender: "Male", lastTest: "3 days ago", risk: "High", condition: "CKD", riskColor: "bg-red-500", score: "78%" },
+    { id: "1", name: "Rajesh Kumar", mrn: "MRN12345", age: 55, gender: "Male", lastTest: "2 days ago", risk: "High", condition: "Lung CA", riskColor: "bg-red-500", score: "82%" },
+    { id: "2", name: "Priya Sharma", mrn: "MRN12346", age: 48, gender: "Female", lastTest: "5 days ago", risk: "Moderate", condition: "Breast CA", riskColor: "bg-amber-500", score: "58%" },
+    { id: "3", name: "Amit Patel", mrn: "MRN12347", age: 62, gender: "Male", lastTest: "1 week ago", risk: "Low", condition: "Colorectal CA", riskColor: "bg-emerald-500", score: "12%" },
+    { id: "4", name: "Sunita Reddy", mrn: "MRN12348", age: 34, gender: "Female", lastTest: "2 weeks ago", risk: "Low", condition: "Head & Neck SCC", riskColor: "bg-emerald-500", score: "5%" },
+    { id: "5", name: "Vikram Singh", mrn: "MRN12349", age: 58, gender: "Male", lastTest: "3 days ago", risk: "High", condition: "Leukemia (AML)", riskColor: "bg-red-500", score: "78%" },
 ];
 
 export default function PatientsPage() {
@@ -23,9 +23,9 @@ export default function PatientsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-800 to-slate-600">
-                        Patient Directory
+                        Oncology Patient Directory
                     </h1>
-                    <p className="text-slate-500">Manage patient records and initiate new analyses.</p>
+                    <p className="text-slate-500">Manage oncology patient records and initiate cancer analyses.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <Button variant="secondary" className="bg-white/50 border-white/60 hover:bg-white text-slate-600">
@@ -34,7 +34,7 @@ export default function PatientsPage() {
                     </Button>
                     <Button className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/20">
                         <UserPlus size={18} className="mr-2" />
-                        Register New Patient
+                        Register Oncology Patient
                     </Button>
                 </div>
             </div>
@@ -96,7 +96,7 @@ export default function PatientsPage() {
 
                                 <div className="flex items-center gap-8">
                                     <div className="text-right hidden sm:block">
-                                        <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Last Test</p>
+                                        <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Last Scan/Lab</p>
                                         <p className="text-sm font-medium text-slate-600">{patient.lastTest}</p>
                                     </div>
 

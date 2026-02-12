@@ -38,14 +38,14 @@ export default async function Home() {
               Hello, Dr. Sharma 👋
             </h1>
             <p className="text-slate-500 font-medium mt-1">
-              Your clinic's metrics overview
+              Your oncology department overview
             </p>
           </div>
 
           <div className="flex gap-3">
             <div className="bg-white/60 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/50 shadow-sm flex items-center gap-3">
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span className="text-sm font-semibold text-slate-700">Clinic Open</span>
+              <span className="text-sm font-semibold text-slate-700">Oncology OPD Active</span>
             </div>
           </div>
         </div>
@@ -74,8 +74,8 @@ export default async function Home() {
               <div className="bg-white/20 p-3 rounded-2xl mb-3 group-hover:bg-white/30 transition-colors">
                 <UserPlus size={24} />
               </div>
-              <h3 className="font-bold text-lg">New Screening</h3>
-              <p className="text-blue-100 text-xs mt-1">Start a new analysis</p>
+              <h3 className="font-bold text-lg">New Cancer Screening</h3>
+              <p className="text-blue-100 text-xs mt-1">Start a new oncology analysis</p>
             </GlassCard>
           </div>
 
@@ -90,7 +90,7 @@ export default async function Home() {
               <GlassCard className="p-6 h-[340px] flex flex-col relative overflow-visible">
                 <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
                   <TrendingUp size={18} className="text-primary-500" />
-                  Disease Distribution
+                  Cancer Type Distribution
                 </h3>
                 <div className="flex-1 -mt-4">
                   <DiseaseDistributionChart data={diseaseData} />

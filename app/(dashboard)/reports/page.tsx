@@ -9,8 +9,8 @@ export default function ReportsPage() {
         <div className="h-[calc(100vh-100px)] flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-800">Report Generation</h1>
-                    <p className="text-slate-500 text-sm">Configure and download comprehensive patient reports.</p>
+                    <h1 className="text-2xl font-bold text-slate-800">Oncology Report Generation</h1>
+                    <p className="text-slate-500 text-sm">Configure and download comprehensive oncology patient reports.</p>
                 </div>
             </div>
 

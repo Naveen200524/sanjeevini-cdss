@@ -11,8 +11,8 @@ export default function QueuePage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-800">Work Queue</h1>
-                    <p className="text-slate-500 text-sm">Manage pending reviews, alerts, and follow-ups.</p>
+                    <h1 className="text-2xl font-bold text-slate-800">Oncology Work Queue</h1>
+                    <p className="text-slate-500 text-sm">Manage pending oncology reviews, alerts, and cancer treatment follow-ups.</p>
                 </div>
                 <Button className="bg-primary-600 text-white shadow-lg shadow-primary-500/20">
                     Refresh Queue
@@ -85,7 +85,7 @@ export default function QueuePage() {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
                                             <Badge variant="outline" className="bg-white border-slate-200 text-slate-600 font-normal">
-                                                Lab Review
+                                                Tumor Marker Review
                                             </Badge>
                                         </div>
                                     </td>

@@ -1,0 +1,290 @@
+
+/**
+ * Tier API — Delegates to supabase-api.ts with adapters for specific tier views
+ */
+
+import {
+    createPatient as dbCreatePatient,
+    getRecentPatients,
+    searchPatients as dbSearchPatients,
+    getPatientByHospitalId as dbGetPatient,
+    getQuestionnaires as dbGetQuestionnaires,
+    submitQuestionnaire as dbSubmitQuestionnaire,
+    getClinicalScores as dbGetClinicalScores,
+    upsertClinicalScores as dbSubmitClinicalScores,
+    Patient as DbPatient,
+    PatientInsert
+} from "./supabase-api";
+
+// ─── Types ──────────────────────────────────────────────────
+
+export interface RegisteredPatient {
+    id: string;
+    hospitalId: string;
+    name: string;
+    age: number;
+    sex: "Male" | "Female" | "Other";
+    phone: string;
+    email: string;
+    enrollmentDate: string;
+    studyParticipantNumber: string;
+    hometown: string;
+    distanceTravelled: string;
+    followUpVisits: string;
+    monthlyIncome: string;
+    occupationHead: string;
+    educationHead: string;
+    isBreadwinner: string;
+    stayDuration: string;
+    stayCosts: string;
+    disabilityLiability: string;
+    registeredAt: string;
+    status: "Registered" | "In Progress" | "Complete";
+}
+
+export interface ReceptionistQueueItem {
+    id: string;
+    patientName: string;
+    hospitalId: string;
+    phone: string;
+    time: string;
+    status: "Waiting" | "In Progress" | "Done";
+}
+
+export interface ReceptionistStats {
+    patientsToday: number;
+    pendingRegistration: number;
+    completed: number;
+}
+
+export interface PatientFormProgress {
+    patientId: string;
+    distressThermometer: boolean;
+    dass21: boolean;
+    costFacit: boolean;
+    qualityOfLife: boolean;
+    personalHistory: boolean;
+}
+
+export interface JuniorDoctorPatient {
+    id: string;
+    name: string;
+    hospitalId: string;
+    age: number;
+    sex: string;
+    category: string;
+    assessmentStatus: "Pending" | "In Progress" | "Complete";
+    lastAssessment: string;
+}
+
+export interface JuniorDoctorStats {
+    assessmentsDone: number;
+    pendingScoring: number;
+    referralsNeeded: number;
+}
+
+export interface ClinicalScores {
+    stressScore: number;
+    stressReferral: boolean;
+    anxietyScore: number;
+    anxietyReferral: boolean;
+    depressionScore: number;
+    depressionReferral: boolean;
+    costFacitTotal: number;
+    costFacitGrade: string;
+    qolTotal: number;
+}
+
+// ─── Mappers ────────────────────────────────────────────────
+
+function mapToRegisteredPatient(p: DbPatient): RegisteredPatient {
+    return {
+        id: p.id,
+        hospitalId: p.hospital_id,
+        name: p.full_name,
+        age: p.age || 0,
+        sex: (p.sex as "Male" | "Female" | "Other") || "Other",
+        phone: p.phone || "",
+        email: p.email || "",
+        enrollmentDate: p.enrollment_date || "",
+        studyParticipantNumber: p.study_participant || "",
+        hometown: p.hometown || "",
+        distanceTravelled: p.distance_travelled || "",
+        followUpVisits: p.follow_up_visits || "",
+        monthlyIncome: p.monthly_income || "",
+        occupationHead: p.occupation_head || "",
+        educationHead: p.education_head || "",
+        isBreadwinner: p.is_breadwinner || "",
+        stayDuration: p.stay_duration || "",
+        stayCosts: p.stay_costs || "",
+        disabilityLiability: p.disability_liability || "",
+        registeredAt: p.created_at,
+        status: (p.status as any) || "Registered",
+    };
+}
+
+// ─── API Functions ──────────────────────────────────────────
+
+// RECEPTIONIST
+
+export async function searchPatients(query: string): Promise<RegisteredPatient[]> {
+    const patients = await dbSearchPatients(query);
+    return patients.map(mapToRegisteredPatient);
+}
+
+export async function getPatientByHospitalId(hospitalId: string): Promise<RegisteredPatient | null> {
+    const p = await dbGetPatient(hospitalId);
+    return p ? mapToRegisteredPatient(p) : null;
+}
+
+export async function getReceptionistQueue(): Promise<ReceptionistQueueItem[]> {
+    // For now, fetch recent patients and map them to queue items
+    const patients = await getRecentPatients(20);
+    return patients.map(p => ({
+        id: p.id,
+        patientName: p.full_name,
+        hospitalId: p.hospital_id,
+        phone: p.phone || "",
+        time: new Date(p.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        status: p.status === 'Registered' ? 'Waiting' : (p.status === 'In Progress' ? 'In Progress' : 'Done')
+    }));
+}
+
+export async function getReceptionistStats(): Promise<ReceptionistStats> {
+    // Mocking aggregating stats from list for now
+    const patients = await getRecentPatients(50);
+    const today = new Date().toISOString().split('T')[0];
+    const todayPatients = patients.filter(p => p.created_at.startsWith(today));
+
+    return {
+        patientsToday: todayPatients.length,
+        pendingRegistration: todayPatients.filter(p => p.status === 'Registered').length,
+        completed: todayPatients.filter(p => p.status === 'Complete').length
+    };
+}
+
+export async function createPatient(data: Partial<RegisteredPatient>): Promise<RegisteredPatient> {
+    // Map to DbInsert
+    const insertData: PatientInsert = {
+        hospital_id: data.hospitalId || `HSP-${Date.now()}`,
+        mrn: `MRN${Date.now()}`, // Auto-generate MRN
+        full_name: data.name || "Unknown",
+        age: data.age,
+        sex: data.sex,
+        phone: data.phone,
+        email: data.email,
+        enrollment_date: data.enrollmentDate,
+        study_participant: data.studyParticipantNumber,
+        hometown: data.hometown,
+        distance_travelled: data.distanceTravelled,
+        follow_up_visits: data.followUpVisits,
+        monthly_income: data.monthlyIncome,
+        occupation_head: data.occupationHead,
+        education_head: data.educationHead,
+        is_breadwinner: data.isBreadwinner,
+        stay_duration: data.stayDuration,
+        stay_costs: data.stayCosts,
+        disability_liability: data.disabilityLiability,
+        status: "Registered"
+    };
+
+    const newP = await dbCreatePatient(insertData);
+    if (!newP) throw new Error("Failed to create patient");
+    return mapToRegisteredPatient(newP);
+}
+
+// PATIENT FORMS
+
+export async function getPatientFormProgress(patientId: string): Promise<PatientFormProgress> {
+    const questionnaires = await dbGetQuestionnaires(patientId);
+
+    const progress: PatientFormProgress = {
+        patientId,
+        distressThermometer: false,
+        dass21: false,
+        costFacit: false,
+        qualityOfLife: false,
+        personalHistory: false
+    };
+
+    questionnaires.forEach(q => {
+        if (q.questionnaire_type === 'distress' && q.completed) progress.distressThermometer = true;
+        if (q.questionnaire_type === 'dass' && q.completed) progress.dass21 = true;
+        if (q.questionnaire_type === 'cost_facit' && q.completed) progress.costFacit = true;
+        if (q.questionnaire_type === 'qol' && q.completed) progress.qualityOfLife = true;
+        if (q.questionnaire_type === 'history' && q.completed) progress.personalHistory = true;
+    });
+
+    return progress;
+}
+
+export async function submitPatientQuestionnaire(
+    patientId: string,
+    type: "distress" | "dass" | "cost-facit" | "qol" | "history",
+    data: Record<string, unknown>
+): Promise<{ success: boolean }> {
+    // Map type hyphen to underscore
+    const dbType = type.replace('-', '_') as any;
+    const success = await dbSubmitQuestionnaire(patientId, dbType, data);
+    return { success };
+}
+
+// JUNIOR DOCTOR
+
+export async function getJuniorDoctorPatients(): Promise<JuniorDoctorPatient[]> {
+    const patients = await getRecentPatients(50);
+    // Filter for those who need assessment
+    return patients
+        .filter(p => p.status !== 'Registered') // Assume Registered are with receptionist
+        .map(p => ({
+            id: p.id,
+            name: p.full_name,
+            hospitalId: p.hospital_id,
+            age: p.age || 0,
+            sex: (p.sex as string) || "Other",
+            category: p.category || "Uncategorized",
+            assessmentStatus: (p.assessment_status as any) || "Pending",
+            lastAssessment: new Date(p.updated_at).toLocaleDateString()
+        }));
+}
+
+export async function getJuniorDoctorStats(): Promise<JuniorDoctorStats> {
+    const patients = await getRecentPatients(50);
+    return {
+        assessmentsDone: patients.filter(p => p.assessment_status === 'Complete').length,
+        pendingScoring: patients.filter(p => p.assessment_status === 'Pending').length,
+        referralsNeeded: 0 // Would need to query clinical scores to filter
+    };
+}
+
+export async function getClinicalScores(patientId: string): Promise<ClinicalScores> {
+    const scores = await dbGetClinicalScores(patientId);
+    if (!scores) {
+        return {
+            stressScore: 0, stressReferral: false,
+            anxietyScore: 0, anxietyReferral: false,
+            depressionScore: 0, depressionReferral: false,
+            costFacitTotal: 0, costFacitGrade: "Pending",
+            qolTotal: 0,
+        };
+    }
+    return {
+        stressScore: scores.stress_score || 0,
+        stressReferral: scores.stress_referral || false,
+        anxietyScore: scores.anxiety_score || 0,
+        anxietyReferral: scores.anxiety_referral || false,
+        depressionScore: scores.depression_score || 0,
+        depressionReferral: scores.depression_referral || false,
+        costFacitTotal: scores.cost_facit_total || 0,
+        costFacitGrade: scores.cost_facit_grade || "Pending",
+        qolTotal: scores.qol_total || 0,
+    };
+}
+
+export async function submitDiagnosis(
+    patientId: string,
+    data: Record<string, unknown>
+): Promise<{ success: boolean }> {
+    const success = await dbSubmitClinicalScores(patientId, data);
+    return { success };
+}

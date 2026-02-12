@@ -31,7 +31,7 @@ export default function PatientProfilePage() {
                         <FileText size={16} className="mr-2" /> Generate Report
                     </Button>
                     <Button className="bg-primary-600 hover:bg-primary-700 text-white shadow-lg shadow-primary-500/20">
-                        <Activity size={18} className="mr-2" /> New Analysis
+                        <Activity size={18} className="mr-2" /> New Oncology Analysis
                     </Button>
                 </div>
             </div>
@@ -70,14 +70,14 @@ export default function PatientProfilePage() {
 
                         <div className="flex flex-wrap gap-2 pt-2">
                             <Badge variant="outline" className="border-slate-200 text-slate-600 bg-slate-50/50">
-                                Hypertension
+                                Lung Adenocarcinoma (Stage IIIA)
                             </Badge>
                             <Badge variant="outline" className="border-slate-200 text-slate-600 bg-slate-50/50">
-                                Type 2 Diabetes
+                                ECOG PS 1
                             </Badge>
                             <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50/50">
                                 <AlertTriangle size={12} className="mr-1" />
-                                Penicillin Allergy
+                                Cisplatin Allergy
                             </Badge>
                         </div>
                     </div>
@@ -89,9 +89,9 @@ export default function PatientProfilePage() {
                 <div className="flex justify-center mb-8">
                     <TabsList>
                         <TabsTrigger value="overview">Overview</TabsTrigger>
-                        <TabsTrigger value="biomarkers">Biomarkers & Vitals</TabsTrigger>
-                        <TabsTrigger value="predictions">Risk Predictions</TabsTrigger>
-                        <TabsTrigger value="history">Clinical History</TabsTrigger>
+                        <TabsTrigger value="biomarkers">Tumor Markers & Labs</TabsTrigger>
+                        <TabsTrigger value="predictions">Cancer Risk Predictions</TabsTrigger>
+                        <TabsTrigger value="history">Treatment History</TabsTrigger>
                     </TabsList>
                 </div>
 
@@ -100,7 +100,7 @@ export default function PatientProfilePage() {
                         {/* Vitals Summary */}
                         <GlassCard className="p-6">
                             <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                                <Activity size={18} className="text-primary-500" /> Recent Vitals
+                                <Activity size={18} className="text-primary-500" /> Oncology Vitals
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-100">
@@ -129,13 +129,13 @@ export default function PatientProfilePage() {
                         {/* Active Medications */}
                         <GlassCard className="p-6">
                             <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                                <FileText size={18} className="text-primary-500" /> Active Medications
+                                <FileText size={18} className="text-primary-500" /> Active Cancer Medications
                             </h3>
                             <div className="space-y-3">
                                 {[
-                                    { name: "Metformin", dose: "500mg", freq: "BID", status: "Active" },
-                                    { name: "Lisinopril", dose: "10mg", freq: "QD", status: "Active" },
-                                    { name: "Atorvastatin", dose: "20mg", freq: "HS", status: "Active" },
+                                    { name: "Pembrolizumab", dose: "200mg", freq: "Q3W IV", status: "Active" },
+                                    { name: "Carboplatin", dose: "AUC 5", freq: "Q3W IV", status: "Active" },
+                                    { name: "Ondansetron", dose: "8mg", freq: "PRN", status: "Active" },
                                 ].map((med, i) => (
                                     <div key={i} className="flex items-center justify-between p-3 hover:bg-slate-50 rounded-lg transition-colors border border-transparent hover:border-slate-100">
                                         <div>
@@ -167,6 +167,6 @@ export default function PatientProfilePage() {
                     <HistoryTimeline />
                 </TabsContent>
             </Tabs>
-        </div>
+        </div >
     );
 }

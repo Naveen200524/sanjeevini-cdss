@@ -47,7 +47,7 @@ export default function SettingsPage() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Specialty</Label>
-                                        <Input defaultValue="Cardiology" />
+                                        <Input defaultValue="Medical Oncology" />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Email Address</Label>
@@ -61,7 +61,7 @@ export default function SettingsPage() {
 
                                 <div className="space-y-2">
                                     <Label>Bio</Label>
-                                    <textarea className="w-full min-h-[100px] rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm focus:ring-2 focus:ring-primary-100 outline-none" defaultValue="Senior Cardiologist with 15 years of experience in preventative care and AI-driven diagnostics." />
+                                    <textarea className="w-full min-h-[100px] rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm focus:ring-2 focus:ring-primary-100 outline-none" defaultValue="Senior Medical Oncologist with 15 years of experience in cancer care and AI-driven oncology diagnostics." />
                                 </div>
                             </div>
                         </div>
@@ -80,7 +80,7 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between">
                                 <div className="space-y-0.5">
                                     <Label className="text-base">Critical Alerts</Label>
-                                    <p className="text-sm text-slate-500">Receive emails for high-risk patient predictions.</p>
+                                    <p className="text-sm text-slate-500">Receive emails for high-risk cancer patient predictions.</p>
                                 </div>
                                 <Switch defaultChecked />
                             </div>
@@ -105,7 +105,7 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between">
                                 <div className="space-y-0.5">
                                     <Label className="text-base">New Lab Results</Label>
-                                    <p className="text-sm text-slate-500">Instant alert when patient reports are ready.</p>
+                                    <p className="text-sm text-slate-500">Instant alert when oncology lab reports are ready.</p>
                                 </div>
                                 <Switch defaultChecked />
                             </div>

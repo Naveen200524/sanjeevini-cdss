@@ -23,7 +23,7 @@ export function Header() {
                 </div>
                 <input
                     type="text"
-                    placeholder="Search for patients, medications..."
+                    placeholder="Search for oncology patients, treatments..."
                     className="w-full bg-white/50 backdrop-blur-sm border-2 border-transparent focus:border-primary-200 focus:bg-white focus:ring-4 focus:ring-primary-100 rounded-2xl py-2.5 pl-12 pr-4 outline-none transition-all duration-300 placeholder:text-slate-400 text-sm shadow-sm"
                 />
             </div>
@@ -45,7 +45,7 @@ export function Header() {
                 <div className="flex items-center gap-3 pl-4 border-l border-slate-200/60">
                     <div className="flex flex-col items-end hidden sm:flex">
                         <span className="text-sm font-bold text-slate-800">Dr. Sharma</span>
-                        <span className="text-xs text-slate-500">Cardiologist</span>
+                        <span className="text-xs text-slate-500">Oncologist</span>
                     </div>
                     <button className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-100 to-primary-50 p-0.5 shadow-sm ring-2 ring-white cursor-pointer hover:ring-primary-100 transition-all relative">
                         <Image
