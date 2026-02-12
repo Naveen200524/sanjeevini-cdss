@@ -4,7 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Clock, CheckCircle, AlertOctagon, MoreHorizontal } from "lucide-react";
+import { Clock, CheckCircle, AlertOctagon } from "lucide-react";
 
 export default function QueuePage() {
     return (

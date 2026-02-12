@@ -1,18 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Home, Users, ClipboardList, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRole } from "@/lib/role-context";
 
 const navItems = [
-    { icon: Home, label: "Home", href: "/junior-doctor" },
-    { icon: Users, label: "Patients", href: "/junior-doctor" },
+    { icon: Home, label: "Dashboard", href: "/junior-doctor" },
+    { icon: Users, label: "Patients", href: "/junior-doctor/patient" },
     { icon: ClipboardList, label: "Assessments", href: "/junior-doctor" },
 ];
 
 export function JuniorDoctorSidebar() {
     const pathname = usePathname();
+    const router = useRouter();
+    const { clearRole } = useRole();
+
+    const handleSwitchRole = () => {
+        clearRole();
+        router.push("/role-select");
+    };
 
     return (
         <aside className="fixed left-0 bottom-0 top-0 md:left-4 md:top-4 md:bottom-4 w-16 md:w-20 flex flex-col items-center py-4 md:py-8 z-50 pointer-events-none md:pointer-events-auto">
@@ -24,7 +32,9 @@ export function JuniorDoctorSidebar() {
 
                 <nav className="flex-1 flex flex-col gap-6 w-full items-center justify-center">
                     {navItems.map((item, index) => {
-                        const isActive = pathname === item.href && index === 0;
+                        const isActive = item.href === "/junior-doctor"
+                            ? pathname === item.href
+                            : pathname.startsWith(item.href);
                         return (
                             <Link
                                 key={index}
@@ -46,22 +56,24 @@ export function JuniorDoctorSidebar() {
                 </nav>
 
                 <div className="flex flex-col gap-4 items-center mt-auto">
-                    <Link
-                        href="/role-select"
-                        className="p-3 rounded-2xl text-slate-400 hover:text-violet-500 hover:bg-white/50 transition-all duration-300 relative group"
+                    <button
+                        onClick={handleSwitchRole}
+                        className="p-3 rounded-2xl text-slate-400 hover:text-violet-500 hover:bg-white/50 transition-all duration-300 relative group cursor-pointer"
                     >
                         <ArrowLeft size={22} strokeWidth={2} />
                         <span className="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
                             Switch Role
                         </span>
-                    </Link>
+                    </button>
                 </div>
             </div>
 
             {/* Mobile Bottom Nav */}
             <div className="fixed bottom-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-lg border-t border-slate-200 md:hidden flex items-center justify-around px-2 z-50 pointer-events-auto pb-safe">
                 {navItems.map((item, index) => {
-                    const isActive = pathname === item.href && index === 0;
+                    const isActive = item.href === "/junior-doctor"
+                        ? pathname === item.href
+                        : pathname.startsWith(item.href);
                     return (
                         <Link
                             key={index}
@@ -76,6 +88,13 @@ export function JuniorDoctorSidebar() {
                         </Link>
                     );
                 })}
+                <button
+                    onClick={handleSwitchRole}
+                    className="p-2 rounded-xl flex flex-col items-center gap-1 transition-colors text-slate-400"
+                >
+                    <ArrowLeft size={20} strokeWidth={2} />
+                    <span className="text-[10px] font-medium">Switch</span>
+                </button>
             </div>
         </aside>
     );

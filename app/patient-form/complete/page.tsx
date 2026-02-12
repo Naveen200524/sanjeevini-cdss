@@ -3,9 +3,19 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useRole } from "@/lib/role-context";
 
 export default function PatientFormCompletePage() {
+    const router = useRouter();
+    const { clearRole } = useRole();
+
+    const handleBackToHome = () => {
+        clearRole();
+        router.push("/role-select");
+    };
+
     return (
         <div className="animate-in fade-in duration-500 flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
             <motion.div
@@ -34,11 +44,13 @@ export default function PatientFormCompletePage() {
                 transition={{ delay: 0.5 }}
                 className="flex gap-3 mt-6"
             >
-                <Link href="/role-select">
-                    <Button variant="secondary" className="bg-white/50 border-slate-200">
-                        Back to Home
-                    </Button>
-                </Link>
+                <Button
+                    variant="secondary"
+                    className="bg-white/50 border-slate-200"
+                    onClick={handleBackToHome}
+                >
+                    Back to Home
+                </Button>
                 <Link href="/patient-form">
                     <Button className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
                         Review Responses <ArrowRight size={18} className="ml-2" />
@@ -48,3 +60,4 @@ export default function PatientFormCompletePage() {
         </div>
     );
 }
+

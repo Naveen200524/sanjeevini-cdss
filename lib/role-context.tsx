@@ -6,26 +6,30 @@ export type UserRole = "receptionist" | "patient" | "junior-doctor" | "senior-do
 
 interface RoleContextValue {
     role: UserRole | null;
+    isHydrated: boolean;
     setRole: (role: UserRole) => void;
     clearRole: () => void;
 }
 
 const RoleContext = createContext<RoleContextValue>({
     role: null,
-    setRole: () => {},
-    clearRole: () => {},
+    isHydrated: false,
+    setRole: () => { },
+    clearRole: () => { },
 });
 
 const ROLE_STORAGE_KEY = "sanjeevini-user-role";
 
 export function RoleProvider({ children }: { children: React.ReactNode }) {
     const [role, setRoleState] = useState<UserRole | null>(null);
+    const [isHydrated, setIsHydrated] = useState(false);
 
     useEffect(() => {
         const stored = localStorage.getItem(ROLE_STORAGE_KEY);
         if (stored && ["receptionist", "patient", "junior-doctor", "senior-doctor"].includes(stored)) {
             setRoleState(stored as UserRole);
         }
+        setIsHydrated(true);
     }, []);
 
     const setRole = (newRole: UserRole) => {
@@ -39,7 +43,7 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <RoleContext.Provider value={{ role, setRole, clearRole }}>
+        <RoleContext.Provider value={{ role, isHydrated, setRole, clearRole }}>
             {children}
         </RoleContext.Provider>
     );

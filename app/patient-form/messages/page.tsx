@@ -9,31 +9,9 @@ import { cn } from "@/lib/utils";
 export default function PatientMessagesPage() {
     const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
 
-    // Mock Patient ID (In real app, get from auth context or URL param)
-    // We'll use a hardcoded one for now that matches the seed
-    // But ideally this page is for *the* patient user.
-    // Let's assume we are "Rajesh Kumar" (RP001) for this demo
-    // We need to fetch the ID of Rajesh Kumar from Supabase if we want to be accurate, 
-    // or just use the ID we know from seed if it was deterministic. 
-    // Since seed uses `gen_random_uuid()`, we can't know it for sure without fetching.
-    // However, for the *purpose of this refactor*, we need a way to identify the patient.
-    // The previous app used `mock-api.ts` which didn't have auth.
-    // We'll trust that the `ThreadList` fetches threads for *this* user.
-    // We need to pass a `currentUserId`. 
-    // This is tricky without a login.
-    // For Phase 1, I will fetch the *first* patient from Supabase and use their ID as "me".
-    // This is a hack for the prototype.
-
-    // Actually, `ThreadList` takes `currentUserId`. 
-    // I'll make a small wrapper to fetch "me" first? 
-    // Or just hardcode a placeholder and relies on `getThreads` returning everything for demo if I cheat?
-    // `getThreads` in `supabase-api.ts` currently:
-    // `if (role === 'doctor') ... else ...`
-    // It filters by `patient_id` if I uncommented it. 
-    // I'll uncomment it in `supabase-api.ts` later or just returns all threads for now for demo.
-
+    // In production, get the current patient ID from auth context
     const CURRENT_USER_ROLE = "patient";
-    const CURRENT_USER_ID = "patient_id_placeholder"; // This needs to match a real DB ID for RLS to work if strict, but here we are in prototype mode.
+    const CURRENT_USER_ID = "patient_id_placeholder";
 
     return (
         <div className="container mx-auto py-6 max-w-4xl h-[calc(100vh-6rem)]">

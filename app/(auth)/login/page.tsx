@@ -2,13 +2,14 @@
 
 import { GlassCard } from "@/components/ui/glass-card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // Assuming we have or will treat basic inputs with standard styling
 import { Lock, Mail, ArrowRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
 export default function LoginPage() {
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState<"login" | "2fa">("login");
 
@@ -104,7 +105,7 @@ export default function LoginPage() {
 
                     <Button
                         className="w-full bg-primary-600 hover:bg-primary-700 text-white shadow-lg shadow-primary-500/20 h-11"
-                        onClick={() => window.location.href = '/'}
+                        onClick={() => router.push('/role-select')}
                     >
                         Verify & Access
                     </Button>

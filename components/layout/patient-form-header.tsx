@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
 import { FormStepper } from "@/components/ui/form-stepper";
+import { useRole } from "@/lib/role-context";
 
 const steps = [
     { label: "Distress", href: "/patient-form/distress" },
@@ -15,8 +14,15 @@ const steps = [
 
 export function PatientFormHeader() {
     const pathname = usePathname();
+    const router = useRouter();
+    const { clearRole } = useRole();
 
     const currentStep = steps.findIndex((s) => pathname?.startsWith(s.href));
+
+    const handleExit = () => {
+        clearRole();
+        router.push("/role-select");
+    };
 
     return (
         <header className="w-full bg-white/60 backdrop-blur-lg border-b border-white/50 sticky top-0 z-50">
@@ -31,9 +37,12 @@ export function PatientFormHeader() {
                             <p className="text-xs text-slate-500">Patient Questionnaire</p>
                         </div>
                     </div>
-                    <Link href="/role-select" className="text-xs text-slate-400 hover:text-slate-600 transition-colors font-medium">
+                    <button
+                        onClick={handleExit}
+                        className="text-xs text-slate-400 hover:text-slate-600 transition-colors font-medium cursor-pointer"
+                    >
                         Exit
-                    </Link>
+                    </button>
                 </div>
 
                 {currentStep >= 0 && (
@@ -46,3 +55,4 @@ export function PatientFormHeader() {
         </header>
     );
 }
+

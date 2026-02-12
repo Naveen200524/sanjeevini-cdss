@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { RoleProvider } from "@/lib/role-context";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -23,7 +24,9 @@ export default function RootLayout({
       <body
         className={`${jakarta.variable} antialiased font-sans`}
       >
-        {children}
+        <RoleProvider>
+          {children}
+        </RoleProvider>
       </body>
     </html>
   );

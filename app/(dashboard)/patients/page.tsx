@@ -2,7 +2,7 @@
 
 import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, Plus, UserPlus, FileText, ChevronRight } from "lucide-react";
+import { Search, Filter, UserPlus, FileText, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";

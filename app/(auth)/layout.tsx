@@ -1,6 +1,5 @@
 
 import React from "react";
-import { AliveBackground } from "@/components/ui/AliveBackground";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
     return (

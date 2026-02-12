@@ -4,6 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { ClipboardList, User, Stethoscope, ShieldCheck, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useRole, type UserRole } from "@/lib/role-context";
 
 const roles = [
     {
@@ -71,6 +72,12 @@ const cardVariants = {
 
 export default function RoleSelectPage() {
     const router = useRouter();
+    const { setRole } = useRole();
+
+    const handleRoleSelect = (role: typeof roles[0]) => {
+        setRole(role.id as UserRole);
+        router.push(role.href);
+    };
 
     return (
         <div className="flex flex-col items-center">
@@ -103,7 +110,7 @@ export default function RoleSelectPage() {
                     <motion.div key={role.id} variants={cardVariants}>
                         <GlassCard
                             className="p-6 cursor-pointer group hover:bg-white/70 transition-all duration-300"
-                            onClick={() => router.push(role.href)}
+                            onClick={() => handleRoleSelect(role)}
                         >
                             <div className="flex items-start gap-4">
                                 <div className={`w-12 h-12 rounded-2xl ${role.iconBg} flex items-center justify-center text-white shadow-lg ${role.shadowColor} shrink-0`}>

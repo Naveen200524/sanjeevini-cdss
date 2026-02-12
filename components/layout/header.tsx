@@ -1,8 +1,28 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Search, Bell, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
+import { Search, Bell, ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 
 export function Header() {
+    const [currentTime, setCurrentTime] = useState("");
+
+    useEffect(() => {
+        const updateTime = () => {
+            setCurrentTime(
+                new Date().toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                })
+            );
+        };
+        updateTime();
+        const interval = setInterval(updateTime, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
     const currentDate = new Date().toLocaleDateString("en-US", {
         weekday: "long",
         month: "long",
@@ -30,9 +50,9 @@ export function Header() {
 
             {/* Right Section: Actions & Profile */}
             <div className="flex items-center gap-4">
-                {/* Date Display (reference image shows time/date) */}
+                {/* Date Display */}
                 <div className="hidden lg:flex flex-col items-end mr-4">
-                    <span className="text-xl font-bold text-slate-800">13:37</span>
+                    <span className="text-xl font-bold text-slate-800">{currentTime}</span>
                     <span className="text-xs font-medium text-slate-500">{currentDate}</span>
                 </div>
 

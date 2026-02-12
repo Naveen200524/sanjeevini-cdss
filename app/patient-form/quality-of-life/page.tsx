@@ -7,8 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { submitPatientQuestionnaire } from "@/lib/tier-mock-api";
-import { getRecentPatients } from "@/lib/tier-mock-api";
+import { submitPatientQuestionnaire, getRecentPatients } from "@/lib/tier-mock-api";
 
 const qolItems = [
     { id: "qol1", label: "How would you rate your quality of life?" },
