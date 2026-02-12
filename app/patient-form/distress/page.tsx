@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { submitPatientQuestionnaire } from "@/lib/tier-mock-api";
-import { getRecentPatients } from "@/lib/supabase-api";
+import { getRecentPatients } from "@/lib/tier-mock-api";
 
 const problemCategories = [
     {

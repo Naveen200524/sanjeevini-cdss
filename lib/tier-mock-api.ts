@@ -3,18 +3,77 @@
  * Tier API — Delegates to supabase-api.ts with adapters for specific tier views
  */
 
-import {
-    createPatient as dbCreatePatient,
-    getRecentPatients,
-    searchPatients as dbSearchPatients,
-    getPatientByHospitalId as dbGetPatient,
-    getQuestionnaires as dbGetQuestionnaires,
-    submitQuestionnaire as dbSubmitQuestionnaire,
-    getClinicalScores as dbGetClinicalScores,
-    upsertClinicalScores as dbSubmitClinicalScores,
-    Patient as DbPatient,
-    PatientInsert
-} from "./supabase-api";
+// Mock data storage
+let patientsStore: any[] = [];
+
+// Helper to generate mock patients if empty
+function ensureMockData() {
+    if (patientsStore.length === 0) {
+        patientsStore = Array.from({ length: 20 }).map((_, i) => ({
+            id: `PAT-${i + 1}`,
+            hospital_id: `HSP-${1000 + i}`,
+            mrn: `MRN-${2000 + i}`,
+            full_name: `Patient ${i + 1}`,
+            age: 45 + i,
+            sex: i % 2 === 0 ? "Male" : "Female",
+            phone: "9876543210",
+            email: `patient${i + 1}@example.com`,
+            enrollment_date: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            status: i < 5 ? "Registered" : (i < 15 ? "In Progress" : "Complete"),
+            risk_level: i % 3 === 0 ? "High" : (i % 3 === 1 ? "Moderate" : "Low"),
+            cancer_type: i % 2 === 0 ? "Lung Adenocarcinoma" : "Breast CA",
+            assessment_status: i < 10 ? "Pending" : "Complete"
+        }));
+    }
+}
+
+// Mock Database Functions replacing supabase-api calls
+
+export async function getRecentPatients(limit: number): Promise<any[]> {
+    ensureMockData();
+    return patientsStore.slice(0, limit);
+}
+
+async function dbSearchPatients(query: string): Promise<any[]> {
+    ensureMockData();
+    const lowerQuery = query.toLowerCase();
+    return patientsStore.filter(p =>
+        p.full_name.toLowerCase().includes(lowerQuery) ||
+        p.hospital_id.toLowerCase().includes(lowerQuery) ||
+        p.mrn.toLowerCase().includes(lowerQuery)
+    );
+}
+
+async function dbGetPatient(hospitalId: string): Promise<any | null> {
+    ensureMockData();
+    return patientsStore.find(p => p.hospital_id === hospitalId) || null;
+}
+
+async function dbCreatePatient(data: any): Promise<any> {
+    ensureMockData();
+    const newPatient = {
+        ...data,
+        id: `PAT-${Date.now()}`,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        status: "Registered",
+        risk_level: "Low",
+        assessment_status: "Pending"
+    };
+    patientsStore.unshift(newPatient);
+    return newPatient;
+}
+
+// Mock Placeholders for other DB calls
+async function dbGetQuestionnaires(id: string): Promise<any[]> { return []; }
+async function dbSubmitQuestionnaire(id: string, type: string, data: any): Promise<boolean> { return true; }
+async function dbGetClinicalScores(id: string): Promise<any> { return null; }
+async function dbSubmitClinicalScores(id: string, data: any): Promise<boolean> { return true; }
+
+export type PatientInsert = any;
+export type DbPatient = any; // simplified for mock
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -40,6 +99,10 @@ export interface RegisteredPatient {
     disabilityLiability: string;
     registeredAt: string;
     status: "Registered" | "In Progress" | "Complete";
+
+    // DPDP Compliance Metadata
+    consentObtained?: boolean;
+    consentTimestamp?: string | null;
 }
 
 export interface ReceptionistQueueItem {
@@ -120,6 +183,8 @@ function mapToRegisteredPatient(p: DbPatient): RegisteredPatient {
         disabilityLiability: p.disability_liability || "",
         registeredAt: p.created_at,
         status: (p.status as any) || "Registered",
+        consentObtained: p.consent_obtained || false,
+        consentTimestamp: p.consent_timestamp || null,
     };
 }
 
@@ -288,3 +353,77 @@ export async function submitDiagnosis(
     const success = await dbSubmitClinicalScores(patientId, data);
     return { success };
 }
+
+// ─── DASHBOARD HELPERS ──────────────────────────────────────
+
+// ─── AUDIT LOGGING (DPDP Compliance) ────────────────────────
+
+export interface AuditLog {
+    id: string;
+    timestamp: string;
+    user: string;
+    action: string;
+    resource: string;
+    details: string;
+}
+
+let auditStore: AuditLog[] = [];
+
+export async function logAction(user: string, action: string, resource: string, details: string) {
+    const log: AuditLog = {
+        id: `LOG-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        timestamp: new Date().toISOString(),
+        user,
+        action,
+        resource,
+        details
+    };
+    auditStore.unshift(log);
+    // Keep only last 100 logs
+    if (auditStore.length > 100) auditStore.pop();
+}
+
+export async function getAuditLogs(): Promise<AuditLog[]> {
+    return auditStore;
+}
+
+
+
+// ... (Rest of the file) //
+
+export interface DashboardPatient {
+    id: string;
+    name: string;
+    mrn: string;
+    diagnosis: string;
+    date: string;
+    status: "Critical" | "Stable" | "Review";
+    avatar: string;
+    tumorBoardReview: boolean; // Multidisciplinary Workflow
+}
+
+export async function getDashboardPatients(): Promise<DashboardPatient[]> {
+    const patients = await getRecentPatients(10);
+    return patients.map(p => {
+        let status: DashboardPatient['status'] = 'Stable';
+        if (p.risk_level === 'High') status = 'Critical';
+        if (p.risk_level === 'Moderate') status = 'Review';
+
+        return {
+            id: p.id,
+            name: p.full_name,
+            mrn: p.mrn,
+            diagnosis: p.cancer_type || "Oncology Assessment",
+            date: new Date(p.updated_at).toLocaleDateString(),
+            status,
+            avatar: p.full_name.charAt(0),
+            tumorBoardReview: p.risk_level === 'High' // Auto-flag high risk for tumor board
+        };
+    });
+}
+
+// Re-export aliases
+export {
+    dbSubmitQuestionnaire as submitQuestionnaire,
+    dbGetQuestionnaires as getQuestionnaires
+};

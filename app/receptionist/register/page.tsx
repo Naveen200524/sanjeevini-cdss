@@ -22,6 +22,7 @@ export default function ReceptionistRegisterPage() {
         hometown: "", distanceTravelled: "", followUpVisits: "",
         monthlyIncome: "", occupationHead: "", educationHead: "",
         isBreadwinner: "", stayDuration: "", stayCosts: "", disabilityLiability: "",
+        consent: false,
     });
 
     const updateField = (key: string, value: string) => {
@@ -49,6 +50,10 @@ export default function ReceptionistRegisterPage() {
             stayDuration: formData.stayDuration,
             stayCosts: formData.stayCosts,
             disabilityLiability: formData.disabilityLiability,
+
+            // DPDP Compliance
+            consentObtained: formData.consent,
+            consentTimestamp: new Date().toISOString()
         });
         setIsSubmitting(false);
         setIsSuccess(true);
@@ -105,6 +110,7 @@ export default function ReceptionistRegisterPage() {
                                             hometown: "", distanceTravelled: "", followUpVisits: "",
                                             monthlyIncome: "", occupationHead: "", educationHead: "",
                                             isBreadwinner: "", stayDuration: "", stayCosts: "", disabilityLiability: "",
+                                            consent: false,
                                         });
                                     }}
                                 >
@@ -274,11 +280,31 @@ export default function ReceptionistRegisterPage() {
                             </TabsContent>
                         </Tabs>
 
+
+                        <div className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-4">
+                            <h4 className="font-bold text-amber-900 flex items-center gap-2">
+                                <span className="text-xl">⚖️</span>
+                                DPDP Act 2023 Compliance
+                            </h4>
+                            <label className="flex items-start gap-3 cursor-pointer group">
+                                <input
+                                    type="checkbox"
+                                    className="mt-1 w-5 h-5 rounded border-amber-400 text-teal-600 focus:ring-teal-500"
+                                    checked={formData.consent}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, consent: e.target.checked }))}
+                                    required
+                                />
+                                <div className="text-sm text-amber-800 leading-relaxed">
+                                    I confirm that the patient has provided <strong>informed consent</strong> for the collection and processing of their sensitive personal data (health data) as per the <strong>Digital Personal Data Protection Act, 2023</strong>. The patient has been informed of their rights and the purpose of data collection.
+                                </div>
+                            </label>
+                        </div>
+
                         <div className="flex justify-end mt-8">
                             <Button
                                 type="submit"
                                 className="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white shadow-lg shadow-teal-500/20 h-12 px-8"
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || !formData.consent}
                             >
                                 {isSubmitting ? (
                                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

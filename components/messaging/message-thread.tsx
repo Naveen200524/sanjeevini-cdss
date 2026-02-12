@@ -6,8 +6,19 @@ import { Send, User, Bot, Check, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { getThreadMessages, sendMessage, Message } from "@/lib/supabase-api";
-import { createClient } from "@/lib/supabase/client";
+
+// Mock Types
+interface Message {
+    id: string;
+    thread_id: string;
+    content: string;
+    sender_id: string;
+    sender_role: 'patient' | 'doctor';
+    sender_name: string;
+    created_at: string;
+    read_at: string | null;
+    is_encrypted: boolean;
+}
 
 interface MessageThreadProps {
     threadId: string;
@@ -22,43 +33,40 @@ export function MessageThread({ threadId, currentUserId, currentUserRole, curren
     const [isLoading, setIsLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Initial fetch
+    // Initial mock fetch
     useEffect(() => {
         const load = async () => {
-            const data = await getThreadMessages(threadId);
-            setMessages(data);
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const mockMessages: Message[] = [
+                {
+                    id: 'msg-1',
+                    thread_id: threadId,
+                    content: "Hello, I have a question about my medication.",
+                    sender_id: 'PAT-1',
+                    sender_role: 'patient',
+                    sender_name: 'Patient Name',
+                    created_at: new Date(Date.now() - 86400000).toISOString(),
+                    read_at: new Date(Date.now() - 86000000).toISOString(),
+                    is_encrypted: true
+                },
+                {
+                    id: 'msg-2',
+                    thread_id: threadId,
+                    content: "Hi, I'm Dr. Emily. How can I help you today?",
+                    sender_id: 'DOC-1',
+                    sender_role: 'doctor',
+                    sender_name: 'Dr. Emily',
+                    created_at: new Date(Date.now() - 85000000).toISOString(),
+                    read_at: null,
+                    is_encrypted: true
+                }
+            ];
+            setMessages(mockMessages);
             setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
         };
         load();
-
-        // Subscribe to real-time updates
-        const supabase = createClient();
-        const channel = supabase
-            .channel(`thread:${threadId}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'messages',
-                    filter: `thread_id=eq.${threadId}`
-                },
-                (payload) => {
-                    const newMsg = payload.new as Message;
-                    if (newMsg.id) { // Simple check
-                        setMessages(prev => {
-                            if (prev.find(m => m.id === newMsg.id)) return prev;
-                            return [...prev, newMsg];
-                        });
-                        setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
-                    }
-                }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
     }, [threadId]);
 
     const handleSend = async () => {
@@ -66,10 +74,10 @@ export function MessageThread({ threadId, currentUserId, currentUserRole, curren
         setIsLoading(true);
 
         try {
-            // Optimistic update
-            const tempId = Math.random().toString();
-            const optimisticMsg: Message = {
-                id: tempId,
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            const newMsg: Message = {
+                id: Math.random().toString(),
                 thread_id: threadId,
                 content: newMessage,
                 sender_id: currentUserId,
@@ -79,13 +87,29 @@ export function MessageThread({ threadId, currentUserId, currentUserRole, curren
                 is_encrypted: true,
                 read_at: null
             };
-            setMessages(prev => [...prev, optimisticMsg]);
+            setMessages(prev => [...prev, newMsg]);
             setNewMessage("");
             setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
 
-            await sendMessage(threadId, newMessage, currentUserRole, currentUserId, currentUserName);
+            // Simulate auto-reply if patient
+            if (currentUserRole === 'patient') {
+                setTimeout(() => {
+                    const reply: Message = {
+                        id: Math.random().toString(),
+                        thread_id: threadId,
+                        content: "Thank you for your message. Dr. Emily will review it shortly.",
+                        sender_id: 'DOC-BOT',
+                        sender_role: 'doctor',
+                        sender_name: 'System Bot',
+                        created_at: new Date().toISOString(),
+                        is_encrypted: true,
+                        read_at: null
+                    };
+                    setMessages(prev => [...prev, reply]);
+                    setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+                }, 1000);
+            }
 
-            // Actual realtime subscription will replace this, but for now we rely on that
         } catch (err) {
             console.error(err);
         } finally {
@@ -114,8 +138,7 @@ export function MessageThread({ threadId, currentUserId, currentUserRole, curren
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((msg, idx) => {
-                    const isMe = msg.sender_id === currentUserId; // Simple check, ideally check role too
-                    // Fallback if IDs match (mock IDs might clash, so enforce role check if possible)
+                    const isMe = msg.sender_id === currentUserId;
                     const actuallyIsMe = msg.sender_role === currentUserRole;
 
                     return (

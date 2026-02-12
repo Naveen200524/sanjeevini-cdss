@@ -1,74 +1,69 @@
-# Sanjeevini - Clinical Decision Support System (CDSS)
+# Sanjeevini - Oncology Clinical Decision Support System (CDSS)
 
-![Next.js](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-15.0-black?style=for-the-badge&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React-19.0-blue?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-**Sanjeevini** is an advanced Multi-Disease Clinical Decision Support System (CDSS) designed to assist physicians in early detection and management of chronic conditions. By leveraging machine learning models and comprehensive biomarker analysis, Sanjeevini provides accurate risk predictions for Cardiovascular Disease (CVD), Diabetes, and Chronic Kidney Disease (CKD).
+**Sanjeevini** is a specialized Clinical Decision Support System designed for **Medical Oncology**. It streamlines the patient journey from reception to diagnosis and treatment, ensuring accurate data collection for clinical trials and routine care.
+
+## 🏥 Clinical Workflows (Source of Truth: `data.md`)
+
+The system maps three distinct roles to specific data collection mandates:
+
+### 1. 🧾 Receptionist (Socio-Economic Profiling)
+- **Demographics**: Age, Sex, Contact.
+- **Socio-Economic Status**: Income, Occupation, Education (Kuppuswamy Scale parameters).
+- **Logistics**: Distance travelled, stay duration, financial burden.
+
+### 2. 🙋 Patient (Self-Reporting)
+- **Distress Thermometer**: Psychological distress screening.
+- **DASS-21**: Depression, Anxiety, Stress Scale.
+- **COST-FACIT**: Financial Toxicity grading.
+- **Quality of Life (QoL)**: EORTC QLQ-C30 based metrics.
+
+### 3. 🩺 Junior Doctor (Clinical Assessment)
+- **Toxicity Grading**: CTCAE based grading for Chemo/RT side effects.
+- **Diagnosis**: TNM Staging, Histopathology.
+- **Treatment Plans**: Chemo cycles, Radiation fractionation.
+- **Referrals**: Palliative care, Psycho-oncology referrals based on scores.
 
 ## 🚀 Key Features
-
--   **Multi-Disease Risk Prediction**: Simultaneous analysis for:
-    -   🔴 **Cardiovascular Disease**: 10-year risk assessment.
-    -   🟡 **Diabetes**: Progression and control analysis.
-    -   🟠 **Chronic Kidney Disease (CKD)**: Stage classification and monitoring.
--   **Biomarker Analysis**: Intelligent processing of lab reports with OCR capabilities and manual entry validation.
--   **Physician Dashboard**: Centralized view for patient management, high-risk alerts, and predictive analytics.
--   **Interactive Visualizations**: Dynamic charts for biomarker trends, risk trajectories, and SHAP-based factor analysis.
--   **Automated Reporting**: Generate professional clinical reports for patients and specialists.
--   **Secure & Compliant**: Designed with role-based access control (RBAC) and privacy standards.
+- **Role-Based Access Control (RBAC)**: Distinct interfaces for Receptionists, Patients, and Doctors.
+- **Real-time Scoring**: Automated calculation of DASS, QoL, and Financial Toxicity scores.
+- **Visual Dashboard**: Track patient throughput, pending assessments, and high-risk alerts.
 
 ## 🛠️ Tech Stack
-
--   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
--   **UI Library**: [React 19](https://react.dev/)
--   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
--   **Animations**: [Framer Motion](https://www.framer.com/motion/)
--   **Charts**: [Recharts](https://recharts.org/) / [Tremor](https://www.tremor.so/)
--   **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + Glassmorphism UI
+- **State/Animations**: Framer Motion
+- **Data Layer**: Supabase (Mocked via `tier-mock-api` for dev)
 
 ## 🏁 Getting Started
 
-First, install the dependencies:
-
 ```bash
+# Install dependencies
 npm install
-# or
-yarn install
-# or
-pnpm install
-```
 
-Then, run the development server:
-
-```bash
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## 📂 Project Structure
 
+```bash
+sanjeevini-cdss/
+├── app/
+│   ├── (auth)/           # Login page
+│   ├── (dashboard)/      # Main Dashboard (Overview)
+│   ├── receptionist/     # Registration & Queue
+│   ├── patient-form/     # Patient Self-Reporting Forms
+│   └── junior-doctor/    # Clinical Assessment Screens
+├── components/           # Reusable UI (GlassCard, Inputs)
+├── lib/
+│   ├── tier-mock-api.ts  # Oncology Data Access Layer
+│   └── mock-api.ts       # DEPRECATED (Generic Mock)
+└── public/               # Assets
 ```
-Sanjeevini/
-├── app/                  # Next.js App Router pages and layouts
-│   ├── (dashboard)/      # Protected dashboard routes
-│   └── (auth)/           # Authentication routes
-├── components/           # Reusable UI components
-│   ├── dashboard/        # Dashboard-specific components (charts, cards)
-│   ├── patient/          # Patient management components
-│   └── ui/               # Generic UI elements (buttons, inputs)
-├── lib/                  # Utility functions and shared logic
-├── public/               # Static assets
-└── styles/               # Global styles
-```
-
-## 📄 License
-
-This project is licensed under the MIT License.

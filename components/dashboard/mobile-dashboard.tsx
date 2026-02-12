@@ -3,10 +3,10 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScanLine, Mic, Bell, Search, ChevronRight } from "lucide-react";
-import { Patient } from "@/lib/mock-api";
+import { DashboardPatient } from "@/lib/tier-mock-api";
 
 interface MobileDashboardProps {
-    patients: Patient[];
+    patients: DashboardPatient[];
 }
 
 export function MobileDashboard({ patients }: MobileDashboardProps) {

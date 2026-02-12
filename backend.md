@@ -24,39 +24,36 @@ The application is structured into two main zones:
 |-------|----------------|---------|-----------------------|
 | `/login` | `LoginPage` | Physician login & 2FA | `POST /auth/login`, `POST /auth/verify` |
 
-### B. Protected Dashboard (`app/(dashboard)`)
-| Route | Page Component | Purpose | Backend Requirements |
-|-------|----------------|---------|-----------------------|
-| `/` | `Dashboard/Home` | Main overview, alerts, stats | Aggregated stats, Recent patients list |
-| `/patients` | `PatientsPage` | Patient registry & search | `GET /patients?search=...&page=...` |
-| `/patients/[id]` | `PatientProfile` | Detailed patient history | `GET /patients/:id`, `GET /patients/:id/history` |
-| `/predictions` | `PredictionsPage` | Run/View ML predictions | `POST /predictions/run`, `GET /predictions/history` |
-| `/analytics` | `AnalyticsPage` | Clinic-level performance | `GET /analytics/metrics` |
-| `/reports` | `ReportsPage` | Generate/View PDF reports | `GET /reports/list`, `POST /reports/generate` |
-| `/settings` | `SettingsPage` | User profile & app config | `GET /user/profile`, `POST /user/update` |
+### B. Protected Routes (Role Mapping)
+| Route | Component | Purpose | Backend Requirements |
+|-------|-----------|---------|-----------------------|
+| `/` | `Dashboard/Home` | Executive Overview | `getReceptionistStats`, `getJuniorDoctorStats` |
+| `/receptionist` | `ReceptionistPage` | Queue Management | `getReceptionistQueue` |
+| `/receptionist/register` | `RegistrationPage` | New Patient Enrollment | `createPatient` (Socio-economic data) |
+| `/patient-form` | `QuestionnairePage` | Patient Self-Reporting Hub | `getPatientFormProgress` |
+| `/junior-doctor` | `AssessmentPage` | Clinical Assessment | `getJuniorDoctorPatients` |
+| `/junior-doctor/patient/[id]` | `ClinicalScoringPage` | Toxicity & Diagnosis | `getClinicalScores`, `submitDiagnosis` |
 
 ## 3. Detailed Data & Component Mapping
 
 ### 3.1 Main Dashboard (`/`)
 **File**: `app/(dashboard)/page.tsx`
-This is a **Server Component**. It fetches data in parallel and passes it to:
+This will be a **Server Component** aggregating data from multiple services:
 
 1.  **`StatCard` Components** (x3)
-    *   **Data Source**: `getDashboardStats()`
-    *   **Backend Needed**: Endpoint returning current clinic stats (Active Cases, High Risk, Pending Reviews).
+    *   **Data Source**: `getReceptionistStats()`, `getJuniorDoctorStats()`
+    *   **Metrics**:
+        *   Patients Registered Today
+        *   Pending Clinical Assessments
+        *   High Toxicity Alerts (Grade 3/4)
 
 2.  **`RecentPatientsTable`**
     *   **Data Source**: `getRecentPatients()`
-    *   **Backend Needed**: List of last 5-10 engaged patients with their current status.
-    *   **Interaction**: Clicking a row navigates to `/patients/[id]`.
+    *   **Context**: Shows patients currently in the pipeline (Registered -> Form Filled -> Assessed).
 
-3.  **`DiseaseDistributionChart`**
-    *   **Data Source**: `getDiseaseDistribution()`
-    *   **Backend Needed**: Breakdown of patient population by primary diagnosis.
-
-4.  **`PredictionAccuracyChart`**
-    *   **Data Source**: `getPredictionAccuracy()`
-    *   **Backend Needed**: Performance metrics of the ML models (e.g., F1 Score or Accuracy % per disease model).
+3.  **`ToxicityAlertWidgets`**
+    *   **Data Source**: `getClinicalScores()` (filtered for high scores)
+    *   **Purpose**: Immediate attention for patients with high DASS/COST/Toxicity scores.
 
 ### 3.2 Authentication Flow
 **File**: `app/(auth)/login/page.tsx`

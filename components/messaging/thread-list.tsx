@@ -2,11 +2,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, User, Circle } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { getThreads, Thread, getRecentPatients } from "@/lib/supabase-api";
-import { createClient } from "@/lib/supabase/client";
+
+// Mock Types
+interface Thread {
+    id: string;
+    patient_id: string;
+    patient_name: string;
+    doctor_id: string;
+    doctor_name: string;
+    last_message: string | null;
+    last_message_at: string;
+    unread_by_doctor: number;
+    unread_by_patient: number;
+    created_at: string;
+}
 
 interface ThreadListProps {
     currentUserRole: "doctor" | "patient";
@@ -22,45 +34,42 @@ export function ThreadList({ currentUserRole, currentUserId, onSelectThread, act
 
     useEffect(() => {
         const load = async () => {
-            let data = await getThreads(currentUserRole, currentUserId);
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 600));
 
-            // If no threads yet (e.g. fresh seed), maybe fetch recent patients and allow starting a chat?
-            // For now, we seed threads for first 5 patients, so we should see something.
-            setThreads(data);
+            // Mock Threads
+            const mockThreads: Thread[] = [
+                {
+                    id: 'thread-1',
+                    patient_id: 'PAT-1',
+                    patient_name: 'Patient Name',
+                    doctor_id: 'DOC-1',
+                    doctor_name: 'Dr. Emily',
+                    last_message: "Thank you for the update.",
+                    last_message_at: new Date(Date.now() - 3600000).toISOString(),
+                    unread_by_doctor: 0,
+                    unread_by_patient: 1,
+                    created_at: new Date(Date.now() - 86400000).toISOString()
+                },
+                {
+                    id: 'thread-2',
+                    patient_id: 'PAT-2',
+                    patient_name: 'John Doe',
+                    doctor_id: 'DOC-1',
+                    doctor_name: 'Dr. Emily',
+                    last_message: "When is my next appointment?",
+                    last_message_at: new Date(Date.now() - 7200000).toISOString(),
+                    unread_by_doctor: 1,
+                    unread_by_patient: 0,
+                    created_at: new Date(Date.now() - 90000000).toISOString()
+                }
+            ];
+
+            setThreads(mockThreads);
             setIsLoading(false);
         };
         load();
-
-        // Subscribe to thread updates (new messages update last_message)
-        const supabase = createClient();
-        const channel = supabase
-            .channel('threads-list')
-            .on(
-                'postgres_changes',
-                {
-                    event: 'UPDATE',
-                    schema: 'public',
-                    table: 'threads'
-                },
-                (payload) => {
-                    const updated = payload.new as Thread;
-                    setThreads(prev => {
-                        const idx = prev.findIndex(t => t.id === updated.id);
-                        if (idx >= 0) {
-                            const newArr = [...prev];
-                            newArr[idx] = updated;
-                            return newArr.sort((a, b) => new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime());
-                        }
-                        return [updated, ...prev];
-                    });
-                }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
-    }, []);
+    }, [currentUserRole, currentUserId]);
 
     const filtered = threads.filter(t =>
         t.patient_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
