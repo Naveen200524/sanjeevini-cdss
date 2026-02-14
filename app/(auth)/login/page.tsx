@@ -89,7 +89,7 @@ export default function LoginPage() {
                 >
                     <div className="bg-emerald-50 text-emerald-700 p-3 rounded-xl flex items-start gap-3 text-sm">
                         <ShieldCheck className="shrink-0 mt-0.5" size={18} />
-                        <p>We've sent a 6-digit code to your registered device for verification.</p>
+                        <p>We&apos;ve sent a 6-digit code to your registered device for verification.</p>
                     </div>
 
                     <div className="flex justify-between gap-2">

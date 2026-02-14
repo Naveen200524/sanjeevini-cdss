@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScanLine, Mic, Bell, Search, ChevronRight } from "lucide-react";
 import { DashboardPatient } from "@/lib/tier-mock-api";
+import Image from "next/image";
 
 interface MobileDashboardProps {
     patients: DashboardPatient[];
@@ -28,7 +29,7 @@ export function MobileDashboard({ patients }: MobileDashboardProps) {
                         <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                     </button>
                     <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
-                        <img src="https://ui-avatars.com/api/?name=Dr+Emily&background=random" alt="Profile" className="w-full h-full object-cover" />
+                        <Image src="https://ui-avatars.com/api/?name=Dr+Emily&background=random" alt="Profile" width={32} height={32} className="w-full h-full object-cover" />
                     </div>
                 </div>
             </header>

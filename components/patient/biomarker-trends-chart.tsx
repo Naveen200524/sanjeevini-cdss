@@ -3,7 +3,6 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { GlassCard } from "@/components/ui/glass-card";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 
 const data = [
     { date: "Jan", sbp: 130, dbp: 85, glucose: 95 },

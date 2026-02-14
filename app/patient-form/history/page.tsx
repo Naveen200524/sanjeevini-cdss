@@ -6,7 +6,6 @@ import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { submitPatientQuestionnaire, getRecentPatients } from "@/lib/tier-mock-api";
 
 const inputClass = "w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2.5 px-4 outline-none focus:ring-2 focus:ring-amber-100 focus:border-amber-400 transition-all text-sm";
@@ -29,6 +28,7 @@ export default function PersonalHistoryPage() {
         familyCancer: "",
         previousDebts: "",
         financialBurden: "",
+        wantsToParticipateInStudy: "",
     });
 
     const toggle = (set: Set<string>, item: string, setter: (s: Set<string>) => void) => {
@@ -179,6 +179,26 @@ export default function PersonalHistoryPage() {
                             <option>Partially</option>
                         </select>
                     </div>
+                </div>
+            </GlassCard>
+
+            {/* Study Participation - Optional */}
+            <GlassCard className="p-6 border-2 border-dashed border-amber-200 bg-amber-50/30">
+                <h4 className="font-semibold text-slate-700 text-lg mb-4 flex items-center gap-2">
+                    📋 Research Study Participation
+                    <span className="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Optional</span>
+                </h4>
+                <p className="text-sm text-slate-600 mb-4">
+                    Would you like to participate in our oncology research studies? Your participation helps advance cancer treatment and care.
+                </p>
+                <div className="space-y-2">
+                    <label className={labelClass}>Would you like to be part of our oncology research study?</label>
+                    <select className={inputClass} value={formData.wantsToParticipateInStudy} onChange={(e) => updateField("wantsToParticipateInStudy", e.target.value)}>
+                        <option value="">Select (Optional)...</option>
+                        <option value="yes">Yes, I would like to participate</option>
+                        <option value="no">No, I do not wish to participate</option>
+                        <option value="maybe">I would like more information first</option>
+                    </select>
                 </div>
             </GlassCard>
 

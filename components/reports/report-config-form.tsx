@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { FileText, Printer, Download } from "lucide-react";
-import { useState } from "react";
 
 export function ReportConfigForm() {
     return (

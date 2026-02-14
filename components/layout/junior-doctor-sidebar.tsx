@@ -8,7 +8,7 @@ import { useRole } from "@/lib/role-context";
 
 const navItems = [
     { icon: Home, label: "Dashboard", href: "/junior-doctor" },
-    { icon: Users, label: "Patients", href: "/junior-doctor/patient" },
+    { icon: Users, label: "Patients", href: "/junior-doctor/patients" },
     { icon: ClipboardList, label: "Assessments", href: "/junior-doctor" },
 ];
 

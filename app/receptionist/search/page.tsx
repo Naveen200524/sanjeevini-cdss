@@ -4,7 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
-import { UserPlus, ChevronRight, UserSearch, SearchX } from "lucide-react";
+import { UserPlus, ChevronRight, UserSearch, SearchX, X, Phone, Mail, MapPin, Calendar } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,6 +14,7 @@ export default function ReceptionistSearchPage() {
     const [results, setResults] = useState<RegisteredPatient[]>([]);
     const [hasSearched, setHasSearched] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState<RegisteredPatient | null>(null);
 
     const handleSearch = async (query: string) => {
         if (!query.trim()) {
@@ -26,6 +27,14 @@ export default function ReceptionistSearchPage() {
         const data = await searchPatients(query);
         setResults(data);
         setIsSearching(false);
+    };
+
+    const handlePatientClick = (patient: RegisteredPatient) => {
+        setSelectedPatient(patient);
+    };
+
+    const closePatientDetails = () => {
+        setSelectedPatient(null);
     };
 
     return (
@@ -44,6 +53,109 @@ export default function ReceptionistSearchPage() {
             <GlassCard className="p-5">
                 <SearchInput onSearch={handleSearch} />
             </GlassCard>
+
+            {/* Patient Details Modal */}
+            <AnimatePresence>
+                {selectedPatient && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                        onClick={closePatientDetails}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[80vh] overflow-y-auto"
+                        >
+                            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                                <h3 className="text-xl font-bold text-slate-800">Patient Details</h3>
+                                <button
+                                    onClick={closePatientDetails}
+                                    className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
+                                >
+                                    <X size={20} className="text-slate-500" />
+                                </button>
+                            </div>
+                            <div className="p-6 space-y-6">
+                                {/* Patient Avatar & Name */}
+                                <div className="flex items-center gap-4">
+                                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+                                        {selectedPatient.name.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <h4 className="text-2xl font-bold text-slate-800">{selectedPatient.name}</h4>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className="font-mono text-sm text-slate-500">{selectedPatient.hospitalId}</span>
+                                            <Badge className={
+                                                selectedPatient.status === "Complete"
+                                                    ? "bg-emerald-100 text-emerald-700 border-none"
+                                                    : selectedPatient.status === "In Progress"
+                                                        ? "bg-amber-100 text-amber-700 border-none"
+                                                        : "bg-slate-100 text-slate-600 border-none"
+                                            }>
+                                                {selectedPatient.status}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Basic Info (Receptionist Level Access) */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="p-4 bg-slate-50 rounded-xl">
+                                        <p className="text-xs text-slate-500 uppercase font-semibold">Age</p>
+                                        <p className="text-lg font-bold text-slate-800">{selectedPatient.age} years</p>
+                                    </div>
+                                    <div className="p-4 bg-slate-50 rounded-xl">
+                                        <p className="text-xs text-slate-500 uppercase font-semibold">Sex</p>
+                                        <p className="text-lg font-bold text-slate-800">{selectedPatient.sex}</p>
+                                    </div>
+                                </div>
+
+                                {/* Contact Info */}
+                                <div className="space-y-3">
+                                    <h5 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Contact Information</h5>
+                                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+                                        <Phone size={18} className="text-teal-500" />
+                                        <span className="text-slate-700">{selectedPatient.phone || "Not provided"}</span>
+                                    </div>
+                                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+                                        <Mail size={18} className="text-teal-500" />
+                                        <span className="text-slate-700">{selectedPatient.email || "Not provided"}</span>
+                                    </div>
+                                    {selectedPatient.hometown && (
+                                        <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+                                            <MapPin size={18} className="text-teal-500" />
+                                            <span className="text-slate-700">{selectedPatient.hometown}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Registration Info */}
+                                <div className="space-y-3">
+                                    <h5 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Registration Details</h5>
+                                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+                                        <Calendar size={18} className="text-teal-500" />
+                                        <div>
+                                            <p className="text-xs text-slate-500">Enrollment Date</p>
+                                            <p className="text-slate-700">{selectedPatient.enrollmentDate || "Not set"}</p>
+                                        </div>
+                                    </div>
+                                    {selectedPatient.studyParticipantNumber && (
+                                        <div className="p-3 bg-teal-50 rounded-xl border border-teal-100">
+                                            <p className="text-xs text-teal-600 uppercase font-semibold">Study Participant Number</p>
+                                            <p className="text-lg font-mono font-bold text-teal-700">{selectedPatient.studyParticipantNumber}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Results */}
             <AnimatePresence mode="wait">
@@ -101,6 +213,7 @@ export default function ReceptionistSearchPage() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.05 }}
+                                onClick={() => handlePatientClick(patient)}
                             >
                                 <GlassCard className="p-4 flex items-center justify-between hover:bg-white/60 group cursor-pointer">
                                     <div className="flex items-center gap-4">

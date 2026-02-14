@@ -2,7 +2,6 @@
 
 import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Stethoscope, CheckCircle, Clock, AlertTriangle, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";

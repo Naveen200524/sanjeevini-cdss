@@ -67,7 +67,7 @@ export function RiskPredictionView() {
                     <div className="w-full">
                         <h4 className="font-bold text-slate-800 text-lg">Detailed Insight: CVD Risk</h4>
                         <p className="text-slate-600 mt-1 max-w-2xl">
-                            The patient's cardiovascular risk is significantly elevated primarily due to uncontrolled <strong className="text-slate-800">systolic blood pressure</strong> and <strong className="text-slate-800">high LDL cholesterol</strong>. Immediate intervention is recommended.
+                        The patient&apos;s cardiovascular risk is significantly elevated primarily due to uncontrolled <strong className="text-slate-800">systolic blood pressure</strong> and <strong className="text-slate-800">high LDL cholesterol</strong>. Immediate intervention is recommended.
                         </p>
                         <div className="mt-4 flex gap-3">
                             <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-500/20">View Clinical Report</Button>

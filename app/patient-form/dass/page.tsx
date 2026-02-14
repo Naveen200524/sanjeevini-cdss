@@ -111,17 +111,17 @@ export default function DASSPage() {
                                 </span>
                                 <p className="text-sm text-slate-700 font-medium leading-relaxed">{item.label}</p>
                             </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                                 {options.map((opt) => (
                                     <button
                                         key={opt.value}
                                         onClick={() => setResponse(item.code, opt.value)}
-                                        className={`px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 border ${responses[item.code] === opt.value
+                                        className={`px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 border text-left ${responses[item.code] === opt.value
                                             ? "bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-500/20"
                                             : "bg-white/50 text-slate-600 border-slate-200 hover:border-amber-300 hover:bg-amber-50"
                                             }`}
                                     >
-                                        {opt.value} — {opt.label.split(" ").slice(0, 3).join(" ")}...
+                                        {opt.label}
                                     </button>
                                 ))}
                             </div>
