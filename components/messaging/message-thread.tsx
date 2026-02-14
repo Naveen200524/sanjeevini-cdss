@@ -138,7 +138,6 @@ export function MessageThread({ threadId, currentUserId, currentUserRole, curren
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((msg, idx) => {
-                    const isMe = msg.sender_id === currentUserId;
                     const actuallyIsMe = msg.sender_role === currentUserRole;
 
                     return (

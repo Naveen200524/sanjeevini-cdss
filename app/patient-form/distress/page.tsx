@@ -79,7 +79,7 @@ export default function DistressThermometerPage() {
         <div className="animate-in fade-in duration-500 slide-in-from-bottom-4 space-y-8">
             <div>
                 <h2 className="text-2xl font-bold text-slate-800">Distress Thermometer</h2>
-                <p className="text-slate-500 mt-1">Rate your cancer-related distress level and select any concerns you're experiencing.</p>
+                <p className="text-slate-500 mt-1">Rate your cancer-related distress level and select any concerns you&apos;re experiencing.</p>
             </div>
 
             {/* Thermometer */}

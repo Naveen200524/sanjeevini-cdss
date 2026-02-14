@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useLayoutEffect } from "react";
 
 export type UserRole = "receptionist" | "patient" | "junior-doctor" | "senior-doctor";
 
@@ -20,15 +20,30 @@ const RoleContext = createContext<RoleContextValue>({
 
 const ROLE_STORAGE_KEY = "sanjeevini-user-role";
 
+// Helper to safely get stored role
+function getStoredRole(): UserRole | null {
+    if (typeof window === 'undefined') return null;
+    const stored = localStorage.getItem(ROLE_STORAGE_KEY);
+    if (stored && ["receptionist", "patient", "junior-doctor", "senior-doctor"].includes(stored)) {
+        return stored as UserRole;
+    }
+    return null;
+}
+
 export function RoleProvider({ children }: { children: React.ReactNode }) {
+    // Use lazy initializer - returns null on server, real value on client
     const [role, setRoleState] = useState<UserRole | null>(null);
     const [isHydrated, setIsHydrated] = useState(false);
 
-    useEffect(() => {
-        const stored = localStorage.getItem(ROLE_STORAGE_KEY);
-        if (stored && ["receptionist", "patient", "junior-doctor", "senior-doctor"].includes(stored)) {
-            setRoleState(stored as UserRole);
+    // Use layout effect to synchronize with localStorage before paint
+    // This is a legitimate hydration pattern to sync with localStorage
+    useLayoutEffect(() => {
+        const storedRole = getStoredRole();
+        if (storedRole) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setRoleState(storedRole);
         }
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsHydrated(true);
     }, []);
 

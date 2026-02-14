@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Search, UserPlus, ClipboardList, ArrowLeft } from "lucide-react";
+import { Home, Search, UserPlus, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/lib/role-context";
 

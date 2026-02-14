@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 export default function MessagesPage() {
     // Layout state
     const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
-    const [selectedThreadName, setSelectedThreadName] = useState<string>("");
 
     // Mock Doctor ID (In real app, get from auth context)
     const CURRENT_USER_ID = "doc_123";
@@ -26,9 +25,8 @@ export default function MessagesPage() {
                     currentUserRole={CURRENT_USER_ROLE}
                     currentUserId={CURRENT_USER_ID} // Fixed Doctor ID
                     activeThreadId={selectedThreadId || undefined}
-                    onSelectThread={(id, name) => {
+                    onSelectThread={(id) => {
                         setSelectedThreadId(id);
-                        setSelectedThreadName(name);
                     }}
                 />
             </div>

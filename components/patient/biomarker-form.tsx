@@ -4,7 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronRight, Save, RotateCcw } from "lucide-react";
+import { ChevronRight, Save } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 

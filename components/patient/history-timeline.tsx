@@ -2,7 +2,7 @@
 
 import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
-import { Circle, FilePlus, FlaskConical, Stethoscope, AlertTriangle } from "lucide-react";
+import { FilePlus, FlaskConical, Stethoscope, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 
 const events = [

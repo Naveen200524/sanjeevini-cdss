@@ -3,8 +3,42 @@
  * Tier API — Delegates to supabase-api.ts with adapters for specific tier views
  */
 
+// Type definitions for mock data
+interface MockPatient {
+    id: string;
+    hospital_id: string;
+    mrn: string;
+    full_name: string;
+    age: number;
+    sex: string;
+    phone: string;
+    alternate_phone?: string;
+    email: string;
+    enrollment_date: string;
+    study_participant?: string;
+    hometown?: string;
+    distance_travelled?: string;
+    follow_up_visits?: string;
+    monthly_income?: string;
+    occupation_head?: string;
+    education_head?: string;
+    is_breadwinner?: string;
+    stay_duration?: string;
+    stay_costs?: string;
+    disability_liability?: string;
+    created_at: string;
+    updated_at: string;
+    status: string;
+    risk_level: string;
+    cancer_type: string;
+    assessment_status: string;
+    category?: string;
+    consent_obtained?: boolean;
+    consent_timestamp?: string;
+}
+
 // Mock data storage
-let patientsStore: any[] = [];
+let patientsStore: MockPatient[] = [];
 
 // Helper to generate mock patients if empty
 function ensureMockData() {
@@ -31,12 +65,12 @@ function ensureMockData() {
 
 // Mock Database Functions replacing supabase-api calls
 
-export async function getRecentPatients(limit: number): Promise<any[]> {
+export async function getRecentPatients(limit: number): Promise<MockPatient[]> {
     ensureMockData();
     return patientsStore.slice(0, limit);
 }
 
-async function dbSearchPatients(query: string): Promise<any[]> {
+async function dbSearchPatients(query: string): Promise<MockPatient[]> {
     ensureMockData();
     const lowerQuery = query.toLowerCase();
     return patientsStore.filter(p =>
@@ -46,20 +80,40 @@ async function dbSearchPatients(query: string): Promise<any[]> {
     );
 }
 
-async function dbGetPatient(hospitalId: string): Promise<any | null> {
+async function dbGetPatient(hospitalId: string): Promise<MockPatient | null> {
     ensureMockData();
     return patientsStore.find(p => p.hospital_id === hospitalId) || null;
 }
 
-async function dbCreatePatient(data: any): Promise<any> {
+async function dbCreatePatient(data: PatientInsert): Promise<MockPatient> {
     ensureMockData();
-    const newPatient = {
-        ...data,
+    const newPatient: MockPatient = {
         id: `PAT-${Date.now()}`,
+        hospital_id: data.hospital_id || `HSP-${Date.now()}`,
+        mrn: data.mrn || `MRN-${Date.now()}`,
+        full_name: data.full_name || "Unknown",
+        age: data.age || 0,
+        sex: data.sex || "Other",
+        phone: data.phone || "",
+        alternate_phone: data.alternate_phone,
+        email: data.email || "",
+        enrollment_date: data.enrollment_date || new Date().toISOString(),
+        study_participant: data.study_participant,
+        hometown: data.hometown,
+        distance_travelled: data.distance_travelled,
+        follow_up_visits: data.follow_up_visits,
+        monthly_income: data.monthly_income,
+        occupation_head: data.occupation_head,
+        education_head: data.education_head,
+        is_breadwinner: data.is_breadwinner,
+        stay_duration: data.stay_duration,
+        stay_costs: data.stay_costs,
+        disability_liability: data.disability_liability,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        status: "Registered",
+        status: data.status || "Registered",
         risk_level: "Low",
+        cancer_type: "Pending Diagnosis",
         assessment_status: "Pending"
     };
     patientsStore.unshift(newPatient);
@@ -67,13 +121,45 @@ async function dbCreatePatient(data: any): Promise<any> {
 }
 
 // Mock Placeholders for other DB calls
-async function dbGetQuestionnaires(id: string): Promise<any[]> { return []; }
-async function dbSubmitQuestionnaire(id: string, type: string, data: any): Promise<boolean> { return true; }
-async function dbGetClinicalScores(id: string): Promise<any> { return null; }
-async function dbSubmitClinicalScores(id: string, data: any): Promise<boolean> { return true; }
+interface Questionnaire {
+    questionnaire_type: string;
+    completed: boolean;
+}
 
-export type PatientInsert = any;
-export type DbPatient = any; // simplified for mock
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function dbGetQuestionnaires(_id: string): Promise<Questionnaire[]> { return []; }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function dbSubmitQuestionnaire(_id: string, _type: string, _data: Record<string, unknown>): Promise<boolean> { return true; }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function dbGetClinicalScores(_id: string): Promise<ClinicalScores | null> { return null; }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function dbSubmitClinicalScores(_id: string, _data: Record<string, unknown>): Promise<boolean> { return true; }
+
+export interface PatientInsert {
+    hospital_id?: string;
+    mrn?: string;
+    full_name?: string;
+    age?: number;
+    sex?: string;
+    phone?: string;
+    alternate_phone?: string;
+    email?: string;
+    enrollment_date?: string;
+    study_participant?: string;
+    hometown?: string;
+    distance_travelled?: string;
+    follow_up_visits?: string;
+    monthly_income?: string;
+    occupation_head?: string;
+    education_head?: string;
+    is_breadwinner?: string;
+    stay_duration?: string;
+    stay_costs?: string;
+    disability_liability?: string;
+    status?: string;
+}
+
+export type DbPatient = MockPatient;
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -184,7 +270,7 @@ function mapToRegisteredPatient(p: DbPatient): RegisteredPatient {
         stayCosts: p.stay_costs || "",
         disabilityLiability: p.disability_liability || "",
         registeredAt: p.created_at,
-        status: (p.status as any) || "Registered",
+        status: (p.status as "Registered" | "In Progress" | "Complete") || "Registered",
         consentObtained: p.consent_obtained || false,
         consentTimestamp: p.consent_timestamp || null,
     };
@@ -292,7 +378,7 @@ export async function submitPatientQuestionnaire(
     data: Record<string, unknown>
 ): Promise<{ success: boolean }> {
     // Map type hyphen to underscore
-    const dbType = type.replace('-', '_') as any;
+    const dbType = type.replace('-', '_');
     const success = await dbSubmitQuestionnaire(patientId, dbType, data);
     return { success };
 }
@@ -311,7 +397,7 @@ export async function getJuniorDoctorPatients(): Promise<JuniorDoctorPatient[]> 
             age: p.age || 0,
             sex: (p.sex as string) || "Other",
             category: p.category || "Uncategorized",
-            assessmentStatus: (p.assessment_status as any) || "Pending",
+            assessmentStatus: (p.assessment_status as "Pending" | "In Progress" | "Complete") || "Pending",
             lastAssessment: new Date(p.updated_at).toLocaleDateString()
         }));
 }
@@ -336,17 +422,8 @@ export async function getClinicalScores(patientId: string): Promise<ClinicalScor
             qolTotal: 0,
         };
     }
-    return {
-        stressScore: scores.stress_score || 0,
-        stressReferral: scores.stress_referral || false,
-        anxietyScore: scores.anxiety_score || 0,
-        anxietyReferral: scores.anxiety_referral || false,
-        depressionScore: scores.depression_score || 0,
-        depressionReferral: scores.depression_referral || false,
-        costFacitTotal: scores.cost_facit_total || 0,
-        costFacitGrade: scores.cost_facit_grade || "Pending",
-        qolTotal: scores.qol_total || 0,
-    };
+    // scores is already ClinicalScores type with camelCase properties
+    return scores;
 }
 
 export async function submitDiagnosis(
@@ -370,7 +447,7 @@ export interface AuditLog {
     details: string;
 }
 
-let auditStore: AuditLog[] = [];
+const auditStore: AuditLog[] = [];
 
 export async function logAction(user: string, action: string, resource: string, details: string) {
     const log: AuditLog = {
@@ -389,7 +466,6 @@ export async function logAction(user: string, action: string, resource: string, 
 export async function getAuditLogs(): Promise<AuditLog[]> {
     return auditStore;
 }
-
 
 
 // ... (Rest of the file) //

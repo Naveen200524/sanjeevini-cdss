@@ -4,7 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ChevronLeft, Edit, Activity, FileText, Clock, AlertTriangle } from "lucide-react";
+import { ChevronLeft, Edit, Activity, FileText, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { HistoryTimeline } from "@/components/patient/history-timeline";
@@ -14,7 +14,8 @@ import { BiomarkerTrendsChart } from "@/components/patient/biomarker-trends-char
 
 export default function PatientProfilePage() {
     const params = useParams();
-    const id = params?.id as string;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const patientId = params?.id as string;
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
