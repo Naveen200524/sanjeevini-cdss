@@ -36,16 +36,16 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
     const [isHydrated, setIsHydrated] = useState(false);
 
     // Use layout effect to synchronize with localStorage before paint
-    // This is a legitimate hydration pattern to sync with localStorage
+    // This is a legitimate hydration pattern to sync with localStorage on mount
+    /* eslint-disable react-hooks/set-state-in-effect */
     useLayoutEffect(() => {
         const storedRole = getStoredRole();
         if (storedRole) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setRoleState(storedRole);
         }
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsHydrated(true);
     }, []);
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     const setRole = (newRole: UserRole) => {
         setRoleState(newRole);

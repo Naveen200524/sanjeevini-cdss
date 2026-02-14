@@ -14,8 +14,8 @@ import { BiomarkerTrendsChart } from "@/components/patient/biomarker-trends-char
 
 export default function PatientProfilePage() {
     const params = useParams();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const patientId = params?.id as string;
+    // TODO: Use patientId to fetch patient data when backend is connected
+    const _patientId = params?.id as string;
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
