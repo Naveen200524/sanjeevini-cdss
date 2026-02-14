@@ -84,6 +84,7 @@ export interface RegisteredPatient {
     age: number;
     sex: "Male" | "Female" | "Other";
     phone: string;
+    alternatePhone?: string;
     email: string;
     enrollmentDate: string;
     studyParticipantNumber: string;
@@ -168,6 +169,7 @@ function mapToRegisteredPatient(p: DbPatient): RegisteredPatient {
         age: p.age || 0,
         sex: (p.sex as "Male" | "Female" | "Other") || "Other",
         phone: p.phone || "",
+        alternatePhone: p.alternate_phone || "",
         email: p.email || "",
         enrollmentDate: p.enrollment_date || "",
         studyParticipantNumber: p.study_participant || "",
@@ -237,6 +239,7 @@ export async function createPatient(data: Partial<RegisteredPatient>): Promise<R
         age: data.age,
         sex: data.sex,
         phone: data.phone,
+        alternate_phone: data.alternatePhone,
         email: data.email,
         enrollment_date: data.enrollmentDate,
         study_participant: data.studyParticipantNumber,

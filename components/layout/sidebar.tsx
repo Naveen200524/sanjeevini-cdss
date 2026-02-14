@@ -3,7 +3,7 @@
 import Link from "next/link";
 import NextImage from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Users, Settings, Activity, PieChart, FileText, MessageSquare, ArrowLeft } from "lucide-react";
+import { Home, Users, Settings, Activity, FileText, MessageSquare, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/lib/role-context";
 
@@ -12,7 +12,6 @@ const navItems = [
     { icon: Users, label: "Patients", href: "/patients" },
     { icon: MessageSquare, label: "Messages", href: "/messages" },
     { icon: Activity, label: "Predictions", href: "/predictions" },
-    { icon: PieChart, label: "Analytics", href: "/analytics" },
     { icon: FileText, label: "Reports", href: "/reports" },
     { icon: Settings, label: "Settings", href: "/settings" },
 ];

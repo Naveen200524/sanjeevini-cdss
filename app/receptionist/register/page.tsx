@@ -15,10 +15,19 @@ const labelClass = "text-xs font-semibold text-slate-600 uppercase tracking-wide
 export default function ReceptionistRegisterPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    // Generate random study participant number
+    const generateStudyParticipantNumber = () => {
+        const prefix = "SPN";
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        return `${prefix}-${randomNum}`;
+    };
+
     const [formData, setFormData] = useState({
-        name: "", age: "", sex: "Male", phone: "", email: "",
+        name: "", age: "", sex: "Male", 
+        countryCode: "", phone: "", alternateCountryCode: "", alternatePhone: "",
+        email: "",
         enrollmentDate: new Date().toISOString().split("T")[0],
-        studyParticipantNumber: "",
+        studyParticipantNumber: generateStudyParticipantNumber(),
         hometown: "", distanceTravelled: "", followUpVisits: "",
         monthlyIncome: "", occupationHead: "", educationHead: "",
         isBreadwinner: "", stayDuration: "", stayCosts: "", disabilityLiability: "",
@@ -32,11 +41,12 @@ export default function ReceptionistRegisterPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        await createPatient({
+                await createPatient({
             name: formData.name,
             age: parseInt(formData.age) || 0,
             sex: formData.sex as "Male" | "Female" | "Other",
-            phone: formData.phone,
+            phone: formData.countryCode && formData.phone ? `+${formData.countryCode}${formData.phone}` : formData.phone,
+            alternatePhone: formData.alternateCountryCode && formData.alternatePhone ? `+${formData.alternateCountryCode}${formData.alternatePhone}` : formData.alternatePhone || undefined,
             email: formData.email,
             enrollmentDate: formData.enrollmentDate,
             studyParticipantNumber: formData.studyParticipantNumber,
@@ -104,9 +114,11 @@ export default function ReceptionistRegisterPage() {
                                     onClick={() => {
                                         setIsSuccess(false);
                                         setFormData({
-                                            name: "", age: "", sex: "Male", phone: "", email: "",
+                                            name: "", age: "", sex: "Male", 
+                                            countryCode: "", phone: "", alternateCountryCode: "", alternatePhone: "",
+                                            email: "",
                                             enrollmentDate: new Date().toISOString().split("T")[0],
-                                            studyParticipantNumber: "",
+                                            studyParticipantNumber: generateStudyParticipantNumber(),
                                             hometown: "", distanceTravelled: "", followUpVisits: "",
                                             monthlyIncome: "", occupationHead: "", educationHead: "",
                                             isBreadwinner: "", stayDuration: "", stayCosts: "", disabilityLiability: "",
@@ -168,9 +180,61 @@ export default function ReceptionistRegisterPage() {
                                             </select>
                                         </div>
 
-                                        <div className="space-y-2">
+                                        <div className="space-y-2 md:col-span-2">
                                             <label className={labelClass}>Phone Number *</label>
-                                            <input className={inputClass} type="tel" placeholder="10-digit mobile" value={formData.phone} onChange={(e) => updateField("phone", e.target.value)} required />
+                                            <div className="flex gap-2">
+                                                <input 
+                                                    className={`${inputClass} w-24`} 
+                                                    type="text" 
+                                                    placeholder="Code" 
+                                                    maxLength={3}
+                                                    value={formData.countryCode} 
+                                                    onChange={(e) => {
+                                                        const value = e.target.value.replace(/\D/g, '');
+                                                        updateField("countryCode", value);
+                                                    }} 
+                                                    required 
+                                                />
+                                                <input 
+                                                    className={`${inputClass} flex-1`} 
+                                                    type="tel" 
+                                                    placeholder="Phone number" 
+                                                    value={formData.phone} 
+                                                    onChange={(e) => {
+                                                        const value = e.target.value.replace(/\D/g, '');
+                                                        updateField("phone", value);
+                                                    }} 
+                                                    required 
+                                                />
+                                            </div>
+                                            <p className="text-xs text-slate-400">Enter country code (e.g. 91 for India, 65 for Singapore) and phone number</p>
+                                        </div>
+
+                                        <div className="space-y-2 md:col-span-2">
+                                            <label className={labelClass}>Alternate Phone Number</label>
+                                            <div className="flex gap-2">
+                                                <input 
+                                                    className={`${inputClass} w-24`} 
+                                                    type="text" 
+                                                    placeholder="Code" 
+                                                    maxLength={3}
+                                                    value={formData.alternateCountryCode} 
+                                                    onChange={(e) => {
+                                                        const value = e.target.value.replace(/\D/g, '');
+                                                        updateField("alternateCountryCode", value);
+                                                    }} 
+                                                />
+                                                <input 
+                                                    className={`${inputClass} flex-1`} 
+                                                    type="tel" 
+                                                    placeholder="Alternate phone number" 
+                                                    value={formData.alternatePhone} 
+                                                    onChange={(e) => {
+                                                        const value = e.target.value.replace(/\D/g, '');
+                                                        updateField("alternatePhone", value);
+                                                    }} 
+                                                />
+                                            </div>
                                         </div>
 
                                         <div className="space-y-2">
@@ -184,8 +248,8 @@ export default function ReceptionistRegisterPage() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className={labelClass}>Oncology Study Participant Number</label>
-                                            <input className={inputClass} placeholder="SPN-XXX" value={formData.studyParticipantNumber} onChange={(e) => updateField("studyParticipantNumber", e.target.value)} />
+                                            <label className={labelClass}>Oncology Study Participant Number (Auto-generated)</label>
+                                            <input className={`${inputClass} bg-slate-100 cursor-not-allowed`} value={formData.studyParticipantNumber} readOnly disabled />
                                         </div>
                                     </div>
                                 </GlassCard>

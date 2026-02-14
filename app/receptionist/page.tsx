@@ -3,20 +3,29 @@
 import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, UserPlus, CheckCircle, Clock, Search, ChevronRight } from "lucide-react";
+import { Users, UserPlus, CheckCircle, Clock, Search, ChevronRight, X, Phone, FileText } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { getReceptionistStats, getReceptionistQueue, type ReceptionistStats, type ReceptionistQueueItem } from "@/lib/tier-mock-api";
 
 export default function ReceptionistHomePage() {
     const [stats, setStats] = useState<ReceptionistStats | null>(null);
     const [queue, setQueue] = useState<ReceptionistQueueItem[]>([]);
+    const [selectedQueueItem, setSelectedQueueItem] = useState<ReceptionistQueueItem | null>(null);
 
     useEffect(() => {
         getReceptionistStats().then(setStats);
         getReceptionistQueue().then(setQueue);
     }, []);
+
+    const handleQueueItemClick = (item: ReceptionistQueueItem) => {
+        setSelectedQueueItem(item);
+    };
+
+    const closeQueueItemDetails = () => {
+        setSelectedQueueItem(null);
+    };
 
     return (
         <div className="max-w-7xl mx-auto animate-in fade-in duration-500 slide-in-from-bottom-4 space-y-8">
@@ -85,6 +94,113 @@ export default function ReceptionistHomePage() {
                 </GlassCard>
             </div>
 
+            {/* Queue Item Details Modal */}
+            <AnimatePresence>
+                {selectedQueueItem && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                        onClick={closeQueueItemDetails}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden"
+                        >
+                            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                                <h3 className="text-xl font-bold text-slate-800">Queue Details</h3>
+                                <button
+                                    onClick={closeQueueItemDetails}
+                                    className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
+                                >
+                                    <X size={20} className="text-slate-500" />
+                                </button>
+                            </div>
+                            <div className="p-6 space-y-5">
+                                {/* Patient Info */}
+                                <div className="flex items-center gap-4">
+                                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                                        {selectedQueueItem.patientName.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <h4 className="text-xl font-bold text-slate-800">{selectedQueueItem.patientName}</h4>
+                                        <span className="font-mono text-sm text-slate-500">{selectedQueueItem.hospitalId}</span>
+                                    </div>
+                                </div>
+
+                                {/* Status Badge */}
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm text-slate-500">Current Status:</span>
+                                    <Badge className={
+                                        selectedQueueItem.status === "Done"
+                                            ? "bg-emerald-100 text-emerald-700 border-none"
+                                            : selectedQueueItem.status === "In Progress"
+                                                ? "bg-amber-100 text-amber-700 border-none"
+                                                : "bg-slate-100 text-slate-600 border-none"
+                                    }>
+                                        {selectedQueueItem.status}
+                                    </Badge>
+                                </div>
+
+                                {/* Details Grid */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="p-4 bg-slate-50 rounded-xl">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Phone size={16} className="text-teal-500" />
+                                            <p className="text-xs text-slate-500 uppercase font-semibold">Phone</p>
+                                        </div>
+                                        <p className="text-slate-800 font-medium">{selectedQueueItem.phone || "Not provided"}</p>
+                                    </div>
+                                    <div className="p-4 bg-slate-50 rounded-xl">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Clock size={16} className="text-teal-500" />
+                                            <p className="text-xs text-slate-500 uppercase font-semibold">Check-in Time</p>
+                                        </div>
+                                        <p className="text-slate-800 font-medium">{selectedQueueItem.time}</p>
+                                    </div>
+                                </div>
+
+                                {/* Form Completion Status */}
+                                <div className="p-4 bg-teal-50 rounded-xl border border-teal-100">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <FileText size={16} className="text-teal-600" />
+                                        <p className="text-sm font-semibold text-teal-700">Form Completion Progress</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm text-slate-600">Demographics</span>
+                                            <Badge className={
+                                                selectedQueueItem.status !== "Waiting"
+                                                    ? "bg-emerald-100 text-emerald-700 border-none"
+                                                    : "bg-slate-100 text-slate-500 border-none"
+                                            }>
+                                                {selectedQueueItem.status !== "Waiting" ? "Complete" : "Pending"}
+                                            </Badge>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm text-slate-600">Questionnaires</span>
+                                            <Badge className={
+                                                selectedQueueItem.status === "Done"
+                                                    ? "bg-emerald-100 text-emerald-700 border-none"
+                                                    : selectedQueueItem.status === "In Progress"
+                                                        ? "bg-amber-100 text-amber-700 border-none"
+                                                        : "bg-slate-100 text-slate-500 border-none"
+                                            }>
+                                                {selectedQueueItem.status === "Done" ? "Complete" : selectedQueueItem.status === "In Progress" ? "In Progress" : "Pending"}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Today's Queue */}
             <GlassCard className="overflow-hidden">
                 <div className="p-6 border-b border-slate-100">
@@ -112,7 +228,8 @@ export default function ReceptionistHomePage() {
                                     initial={{ opacity: 0, y: 5 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.05 }}
-                                    className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors"
+                                    className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors cursor-pointer"
+                                    onClick={() => handleQueueItemClick(item)}
                                 >
                                     <td className="px-6 py-4 font-medium text-slate-700">{item.patientName}</td>
                                     <td className="px-6 py-4 text-slate-500 font-mono text-xs">{item.hospitalId}</td>

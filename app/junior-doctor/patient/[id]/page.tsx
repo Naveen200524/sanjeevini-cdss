@@ -4,7 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ChevronLeft, Activity, FileText, Stethoscope, AlertTriangle, Calendar, CheckCircle, XCircle } from "lucide-react";
+import { ChevronLeft, Activity, FileText, Stethoscope, AlertTriangle, Calendar, CheckCircle, XCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,14 +14,26 @@ import { getClinicalScores, type ClinicalScores } from "@/lib/tier-mock-api";
 const inputClass = "w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2.5 px-4 outline-none focus:ring-2 focus:ring-violet-100 focus:border-violet-400 transition-all text-sm";
 const labelClass = "text-xs font-semibold text-slate-600 uppercase tracking-wide";
 
+const tabOrder = ["diagnosis", "scoring", "treatment", "referral", "dates"];
+
 export default function JuniorDoctorPatientPage() {
     const params = useParams();
     const id = params?.id as string;
     const [scores, setScores] = useState<ClinicalScores | null>(null);
+    const [activeTab, setActiveTab] = useState("diagnosis");
 
     useEffect(() => {
         getClinicalScores(id).then(setScores);
     }, [id]);
+
+    const handleSaveAndNext = () => {
+        const currentIndex = tabOrder.indexOf(activeTab);
+        if (currentIndex < tabOrder.length - 1) {
+            setActiveTab(tabOrder[currentIndex + 1]);
+        }
+    };
+
+    const isLastTab = activeTab === tabOrder[tabOrder.length - 1];
 
     return (
         <div className="max-w-5xl mx-auto animate-in fade-in duration-500 slide-in-from-bottom-4 space-y-8">
@@ -56,7 +68,7 @@ export default function JuniorDoctorPatientPage() {
             </GlassCard>
 
             {/* Assessment Tabs */}
-            <Tabs defaultValue="diagnosis" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <div className="flex justify-center mb-8">
                     <TabsList>
                         <TabsTrigger value="diagnosis">Cancer Diagnosis</TabsTrigger>
@@ -108,8 +120,11 @@ export default function JuniorDoctorPatientPage() {
                             </div>
                         </div>
                         <div className="flex justify-end mt-8">
-                            <Button className="bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/20">
-                                Save Diagnosis
+                            <Button 
+                                onClick={handleSaveAndNext}
+                                className="bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/20"
+                            >
+                                Save & Continue <ArrowRight size={16} className="ml-2" />
                             </Button>
                         </div>
                     </GlassCard>
@@ -173,6 +188,14 @@ export default function JuniorDoctorPatientPage() {
                                 <div className="w-8 h-8 border-3 border-violet-500 border-t-transparent rounded-full animate-spin" />
                             </div>
                         )}
+                        <div className="flex justify-end mt-8">
+                            <Button 
+                                onClick={handleSaveAndNext}
+                                className="bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/20"
+                            >
+                                Continue to Treatment <ArrowRight size={16} className="ml-2" />
+                            </Button>
+                        </div>
                     </GlassCard>
                 </TabsContent>
 
@@ -261,8 +284,11 @@ export default function JuniorDoctorPatientPage() {
                             </div>
                         </div>
                         <div className="flex justify-end mt-8">
-                            <Button className="bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/20">
-                                Save Treatment Details
+                            <Button 
+                                onClick={handleSaveAndNext}
+                                className="bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/20"
+                            >
+                                Save & Continue <ArrowRight size={16} className="ml-2" />
                             </Button>
                         </div>
                     </GlassCard>
@@ -304,8 +330,11 @@ export default function JuniorDoctorPatientPage() {
                             </div>
                         </div>
                         <div className="flex justify-end mt-8">
-                            <Button className="bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/20">
-                                Save Referral
+                            <Button 
+                                onClick={handleSaveAndNext}
+                                className="bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/20"
+                            >
+                                Save & Continue <ArrowRight size={16} className="ml-2" />
                             </Button>
                         </div>
                     </GlassCard>
@@ -333,9 +362,11 @@ export default function JuniorDoctorPatientPage() {
                             </div>
                         </div>
                         <div className="flex justify-end mt-8">
-                            <Button className="bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/20">
-                                Save Dates
-                            </Button>
+                            <Link href="/junior-doctor">
+                                <Button className="bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/20">
+                                    <CheckCircle size={16} className="mr-2" /> Complete Assessment
+                                </Button>
+                            </Link>
                         </div>
                     </GlassCard>
                 </TabsContent>
