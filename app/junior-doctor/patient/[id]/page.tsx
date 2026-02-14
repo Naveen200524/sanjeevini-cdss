@@ -4,7 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ChevronLeft, Activity, FileText, Stethoscope, AlertTriangle, Calendar, CheckCircle, XCircle, ArrowRight } from "lucide-react";
+import { ChevronLeft, Activity, FileText, Stethoscope, AlertTriangle, Calendar, CheckCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -32,8 +32,6 @@ export default function JuniorDoctorPatientPage() {
             setActiveTab(tabOrder[currentIndex + 1]);
         }
     };
-
-    const isLastTab = activeTab === tabOrder[tabOrder.length - 1];
 
     return (
         <div className="max-w-5xl mx-auto animate-in fade-in duration-500 slide-in-from-bottom-4 space-y-8">

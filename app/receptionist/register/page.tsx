@@ -12,22 +12,25 @@ import { createPatient } from "@/lib/tier-mock-api";
 const inputClass = "w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2.5 px-4 outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-400 transition-all text-sm";
 const labelClass = "text-xs font-semibold text-slate-600 uppercase tracking-wide";
 
+// Generate random study participant number - called outside of component render
+function generateStudyParticipantNumber(): string {
+    const prefix = "SPN";
+    const randomNum = Math.floor(100000 + Math.random() * 900000);
+    return `${prefix}-${randomNum}`;
+}
+
 export default function ReceptionistRegisterPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
-    // Generate random study participant number
-    const generateStudyParticipantNumber = () => {
-        const prefix = "SPN";
-        const randomNum = Math.floor(100000 + Math.random() * 900000);
-        return `${prefix}-${randomNum}`;
-    };
+    
+    // Use lazy initializer for study participant number
+    const [studyParticipantNumber, setStudyParticipantNumber] = useState(() => generateStudyParticipantNumber());
 
     const [formData, setFormData] = useState({
         name: "", age: "", sex: "Male", 
         countryCode: "", phone: "", alternateCountryCode: "", alternatePhone: "",
         email: "",
         enrollmentDate: new Date().toISOString().split("T")[0],
-        studyParticipantNumber: generateStudyParticipantNumber(),
         hometown: "", distanceTravelled: "", followUpVisits: "",
         monthlyIncome: "", occupationHead: "", educationHead: "",
         isBreadwinner: "", stayDuration: "", stayCosts: "", disabilityLiability: "",
@@ -38,6 +41,20 @@ export default function ReceptionistRegisterPage() {
         setFormData((prev) => ({ ...prev, [key]: value }));
     };
 
+    const resetForm = () => {
+        setFormData({
+            name: "", age: "", sex: "Male", 
+            countryCode: "", phone: "", alternateCountryCode: "", alternatePhone: "",
+            email: "",
+            enrollmentDate: new Date().toISOString().split("T")[0],
+            hometown: "", distanceTravelled: "", followUpVisits: "",
+            monthlyIncome: "", occupationHead: "", educationHead: "",
+            isBreadwinner: "", stayDuration: "", stayCosts: "", disabilityLiability: "",
+            consent: false,
+        });
+        setStudyParticipantNumber(generateStudyParticipantNumber());
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -46,10 +63,12 @@ export default function ReceptionistRegisterPage() {
             age: parseInt(formData.age) || 0,
             sex: formData.sex as "Male" | "Female" | "Other",
             phone: formData.countryCode && formData.phone ? `+${formData.countryCode}${formData.phone}` : formData.phone,
-            alternatePhone: formData.alternateCountryCode && formData.alternatePhone ? `+${formData.alternateCountryCode}${formData.alternatePhone}` : formData.alternatePhone || undefined,
+            alternatePhone: formData.alternateCountryCode && formData.alternatePhone 
+                ? `+${formData.alternateCountryCode}${formData.alternatePhone}` 
+                : (formData.alternatePhone ? formData.alternatePhone : undefined),
             email: formData.email,
             enrollmentDate: formData.enrollmentDate,
-            studyParticipantNumber: formData.studyParticipantNumber,
+            studyParticipantNumber: studyParticipantNumber,
             hometown: formData.hometown,
             distanceTravelled: formData.distanceTravelled,
             followUpVisits: formData.followUpVisits,
@@ -113,17 +132,7 @@ export default function ReceptionistRegisterPage() {
                                     variant="secondary"
                                     onClick={() => {
                                         setIsSuccess(false);
-                                        setFormData({
-                                            name: "", age: "", sex: "Male", 
-                                            countryCode: "", phone: "", alternateCountryCode: "", alternatePhone: "",
-                                            email: "",
-                                            enrollmentDate: new Date().toISOString().split("T")[0],
-                                            studyParticipantNumber: generateStudyParticipantNumber(),
-                                            hometown: "", distanceTravelled: "", followUpVisits: "",
-                                            monthlyIncome: "", occupationHead: "", educationHead: "",
-                                            isBreadwinner: "", stayDuration: "", stayCosts: "", disabilityLiability: "",
-                                            consent: false,
-                                        });
+                                        resetForm();
                                     }}
                                 >
                                     <UserPlus size={16} className="mr-2" />
@@ -207,7 +216,7 @@ export default function ReceptionistRegisterPage() {
                                                     required 
                                                 />
                                             </div>
-                                            <p className="text-xs text-slate-400">Enter country code (e.g. 91 for India, 65 for Singapore) and phone number</p>
+                                            <p className="text-xs text-slate-500">Enter country code (e.g. 91 for India, 65 for Singapore) and phone number</p>
                                         </div>
 
                                         <div className="space-y-2 md:col-span-2">
@@ -249,7 +258,7 @@ export default function ReceptionistRegisterPage() {
 
                                         <div className="space-y-2">
                                             <label className={labelClass}>Oncology Study Participant Number (Auto-generated)</label>
-                                            <input className={`${inputClass} bg-slate-100 cursor-not-allowed`} value={formData.studyParticipantNumber} readOnly disabled />
+                                            <input className={`${inputClass} bg-slate-100 cursor-not-allowed`} value={studyParticipantNumber} readOnly disabled />
                                         </div>
                                     </div>
                                 </GlassCard>

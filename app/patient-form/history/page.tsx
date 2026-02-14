@@ -6,7 +6,6 @@ import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { submitPatientQuestionnaire, getRecentPatients } from "@/lib/tier-mock-api";
 
 const inputClass = "w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2.5 px-4 outline-none focus:ring-2 focus:ring-amber-100 focus:border-amber-400 transition-all text-sm";
